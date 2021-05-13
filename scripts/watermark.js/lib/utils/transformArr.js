@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=void 0;var _default=function(e){if(e&&e[0]&&e[0][0]){for(var r=e.length,t=e[0].length,o=[],f=0;f<r;f++)for(var l=0;l<t;l++)o[l]||(o[l]=[]),o[l][f]=e[f][l];return o}console.error("请输入二维矩阵")};exports.default=_default;

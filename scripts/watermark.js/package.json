@@ -1,0 +1,31 @@
+{
+  "name": "watermark.js",
+  "version": "0.0.1",
+  "description": "img blind watermark by frontend",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "gulp --gulpfile ./scripts/gulpfile.js ",
+    "upgrade": "npm run build && node ./scripts/version-update.js && npm publish"
+  },
+  "keywords": [
+    "img",
+    "blind",
+    "wartmark",
+    "discrete wavelet"
+  ],
+  "author": "Sherry",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.11.1",
+    "@babel/preset-env": "^7.11.0",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-uglify-es": "^2.0.0"
+  },
+  "dependencies": {
+    "discrete-wavelets": "^5.0.7",
+    "numjs": "^0.16.0",
+    "numeric": "^1.2.6"
+  }
+}
