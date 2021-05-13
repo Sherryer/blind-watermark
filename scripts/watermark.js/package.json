@@ -1,5 +1,5 @@
 {
-  "name": "watermark.js",
+  "name": "blind-watermark",
   "version": "0.0.1",
   "description": "img blind watermark by frontend",
   "main": "lib/index.js",
@@ -13,11 +13,15 @@
     "wartmark",
     "discrete wavelet"
   ],
+  "files": [
+    "src",
+    "lib"
+  ],
   "author": "Sherry",
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Sherryer/watermark.js/tree/master/scripts/watermark.js"
+    "url": "https://github.com/Sherryer/watermark.js/tree/master/scripts/watermark.js"
   },
   "devDependencies": {
     "@babel/core": "^7.11.1",

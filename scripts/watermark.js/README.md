@@ -1,6 +1,6 @@
-# watermark.js
+# blind-watermark
 
-watermark.js 是一个用于给图片嵌入盲水印的前端库。解水印不需要原图。
+blindWatermark 是一个用于给图片嵌入盲水印的前端库。解水印不需要原图。
 
 可嵌入水印类型分别为：布尔值数组、字符串、图片。
 
@@ -8,14 +8,14 @@ watermark.js 是一个用于给图片嵌入盲水印的前端库。解水印不�
 
 ## 安装
 ```js
-	npm install --save  watermark.js
+npm install --save  blind-watermark
 ```
 
 
 ## 使用
 
 ```js
-    import watermark from 'watermark.js'
+import watermark from 'blind-watermark'
 ```
 
 ### 嵌入水印
