@@ -8,14 +8,14 @@ watermark.js 是一个用于给图片嵌入盲水印的前端库。解水印不�
 
 ## 安装
 ```js
-npm install --save  watermark.js
+	npm install --save  watermark.js
 ```
 
 
 ## 使用
 
 ```js
-import watermark from 'watermark.js'
+    import watermark from 'watermark.js'
 ```
 
 ### 嵌入水印
@@ -73,6 +73,16 @@ imgDom 为水印图 img 标签。图片水印会直接下载。
 
 ## 例子
 
+[文件](https://github.com/Sherryer/watermark.js/blob/master/src/index.jsx)
+
+[项目](https://github.com/Sherryer/watermark.js)
+
+```
+git clone git@github.com:Sherryer/watermark.js.git
+cd /watermark.js
+npm install
+npm run start
+```
 
 
 ## 计划
