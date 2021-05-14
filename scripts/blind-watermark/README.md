@@ -11,14 +11,14 @@ blindWatermark 是一个用于给图片嵌入盲水印的前端库。解水印�
 #### 原图：
 1680 * 1066 尺寸；3,347,187字节；
 
-![img](origin.png)
+![img](https://raw.githubusercontent.com/Sherryer/blind-watermark/master/scripts/blind-watermark/origin.png)
 
 #### 水印后：
 1680 * 1066 尺寸；3,376,079 字节；
 
 水印内容：'测试数据噢'
 
-![img](wm.png)
+![img](https://raw.githubusercontent.com/Sherryer/blind-watermark/master/scripts/blind-watermark/wm.png)
 
 ## 安装
 ```js
@@ -99,7 +99,7 @@ npm run start
 
 ## changelog
 
-[changelog](changelog.md)
+[changelog](https://github.com/Sherryer/blind-watermark/blob/master/scripts/blind-watermark/changelog.md)
 
 ## 计划
 1. 考虑不阻塞 js 主线程的计算方案，当然计算时间也会增加。
