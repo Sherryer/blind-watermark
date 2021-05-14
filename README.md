@@ -18,5 +18,5 @@ npm install
 npm run start 
 ```
 
-![img](eample.png)
+![img](example.png)
 

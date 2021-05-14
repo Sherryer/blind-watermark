@@ -137,7 +137,7 @@ let Extract = () => {
 let App = () => {
     return (
         <div>
-            <h3>watermark.js</h3>
+            <h3>blind-watermark</h3>
             <hr/>
             <h4>图片加水印</h4>
             <AddWm/>
