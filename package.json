@@ -4,7 +4,6 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server",
-    "build": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Sherry",
@@ -13,7 +12,7 @@
   "dependencies": {
     "@babel/polyfill": "^7.7.0",
     "antd": "^4.14.1",
-    "blind-watermark": "0.0.4",
+    "blind-watermark": "0.0.6",
     "dataloader": "^2.0.0",
     "moment": "^2.24.0",
     "react": "^16.12.0",
