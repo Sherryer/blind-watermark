@@ -1,6 +1,5 @@
-const nj = require('numjs');
 import numeric from 'numeric'
-import transformArr from "./transformArr"
+import {diag, dot, transform} from "./matrixMethods"
 import againGroup from './againGroup'
 
 const d1 = 20;
@@ -56,9 +55,7 @@ const encode = (matrix, password = true) => {
     S[0] = mixRobust(S[0], d1, password)
     S[1] = mixRobust(S[1], d2, password)
 
-    let njData = nj.dot(U, nj.dot(nj.diag(S), transformArr(V)));
-
-    return againGroup(njData.selection.data, njData.selection.shape[1])
+    return dot(U, dot(diag(S), transform(V)))
 };
 
 const decode = (matrix, average = 0.5) => {

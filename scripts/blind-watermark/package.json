@@ -1,6 +1,6 @@
 {
   "name": "blind-watermark",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "description": "img blind watermark by frontend",
   "main": "lib/index.js",
   "scripts": {
@@ -21,7 +21,7 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Sherryer/watermark.js/tree/master/scripts/watermark.js"
+    "url": "https://github.com/Sherryer/blind-watermark/tree/master/scripts/blind-watermark"
   },
   "devDependencies": {
     "@babel/core": "^7.11.1",
@@ -33,7 +33,6 @@
   },
   "dependencies": {
     "discrete-wavelets": "^5.0.7",
-    "numjs": "^0.16.0",
     "numeric": "^1.2.6"
   }
 }
