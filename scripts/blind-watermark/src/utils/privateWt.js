@@ -1,4 +1,4 @@
-// 哈尔小波 wt 变换封装
+// 哈尔小波变换封装
 import wt from 'discrete-wavelets'
 
 const dwt = (arr) => {

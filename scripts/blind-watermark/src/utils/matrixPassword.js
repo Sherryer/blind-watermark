@@ -1,6 +1,5 @@
 import numeric from 'numeric'
 import {diag, dot, transform} from "./matrixMethods"
-import againGroup from './againGroup'
 
 const d1 = 20;
 const d2 = 6;
