@@ -1,7 +1,6 @@
 import React, {useRef, useState} from 'react'
 import {render} from 'react-dom'
 import watermark from 'blind-watermark'
-// import watermark from '../scripts/blind-watermark/src/index'
 
 var bl = [true, true, false, false, true]
 var str = '测试数据噢'

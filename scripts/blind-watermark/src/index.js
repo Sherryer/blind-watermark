@@ -4,6 +4,11 @@ import strided from './utils/strided'
 import matrixPassword from './utils/matrixPassword'
 import stringCode from './utils/stringCode'
 
+var d = 1
+var aabbcc = `啊哈${d}`
+
+console.log(aabbcc)
+
 const getWmResult = (wmList, type, imgWmShape, name) => {
     if (type === 'bool') {
         return wmList
@@ -254,4 +259,8 @@ class WaterMark {
     }
 }
 
-export default new WaterMark()
+let bwm = new WaterMark();
+
+// module.exports = bwm
+// export {bwm}
+export default bwm
