@@ -1,3 +1,8 @@
+const flat = (arr) => {
+    if (!arr) { return [] }
+    return Promise.resolve(arr.flat())
+}
+
 const click = (node) => {
     try {
         node.dispatchEvent(new MouseEvent("click"));
@@ -73,12 +78,18 @@ const getData = (img) => {
         height
     } = imgData
 
-    let R = []
-    let G = []
-    let B = []
-    let A = []
+    let R2d = []
+    let G2d = []
+    let B2d = []
+    let A2d = []
 
-    let utilArr = [R, G, B, A]
+    let R1d = []
+    let G1d = []
+    let B1d = []
+    let A1d = []
+
+    let utilArr = [R2d, G2d, B2d, A2d]
+    let util1dArr = [R1d, G1d, B1d, A1d]
 
     data.forEach((value, index) => {
         let location = index % 4
@@ -91,6 +102,8 @@ const getData = (img) => {
             utilArr[location][row] = []
         }
 
+        util1dArr[location][position]  = value
+
         utilArr[location][row][rowIndex] = value
     })
 
@@ -98,19 +111,24 @@ const getData = (img) => {
         imgData,
         width,
         height,
-        R,
-        G,
-        B,
-        A,
+        R2d,
+        G2d,
+        B2d,
+        A2d,
+        R1d,
+        G1d,
+        B1d,
+        A1d,
     }
 }
 
-const setData = ({R, G, B, A = [], width, height}, downLoad, name = 'download') => {
-    // r g b a 都为二维数组，需要展开
-    let r = R.join(',').split(',')
-    let g = G.join(',').split(',')
-    let b = B.join(',').split(',')
-    let a = A.join(',').split(',')
+const setData = async ({R, G, B, A = [], width, height}, downLoad, name = 'download') => {
+    // r g b 支持 1 维或 2 维数组 a 只支持 1 维数组
+    // 数据较大时 2 维转 1 维耗时较高，可能带来住线程阻塞，三通道均改为异步
+    let r = await flat(R)
+    let g = await flat(G)
+    let b = await flat(B)
+    let a = A
 
     let canvas = getCanvasDom();
     canvas.width = width;
@@ -146,19 +164,14 @@ const getTwoEnds = (img) => {
     let {
         width,
         height,
-        R,
-        G,
-        B,
-        A,
+        R1d,
+        G1d,
+        B1d,
+        A1d,
     } = getData(img)
 
-    let r = R.join(',').split(',')
-    let g = G.join(',').split(',')
-    let b = B.join(',').split(',')
-    let a = A.join(',').split(',')
-
-    let data = a.map((a, index) => {
-        let gray = Math.max((r[index], g[index], b[index]))
+    let data = A1d.map((a, index) => {
+        let gray = Math.max((R1d[index], G1d[index], B1d[index]))
         return gray > 127.5  // true  代表白 false 代表黑
     })
 

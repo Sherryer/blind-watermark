@@ -3,6 +3,7 @@ import imgD from './utils/imgData'
 import strided from './utils/strided'
 import matrixPassword from './utils/matrixPassword'
 import stringCode from './utils/stringCode'
+import mixWatermark from './mixWatermark/index'
 
 const getWmResult = (wmList, type, imgWmShape, name) => {
     if (type === 'bool') {
@@ -23,45 +24,44 @@ const getWmResult = (wmList, type, imgWmShape, name) => {
 class WaterMark {
     constructor() {
         this.blockShape = 8
+    }
+
+    resetData() {
         this.lowChannel = []
         this.heightChannel = []
         this.wmBoolList = []
 
         this.addWidth = false
         this.addHeight = false
-
-        this.fullRowNun = 0
-        this.fullColumnNun = 0
     }
 
-    // 读图，获取 rgb 低频分量、四维化
+    // 读原图，获取 rgb 通道低频分量、低频分量四维化
     readImg(img) {
         let {
-            imgData,
             width,
             height,
-            R,
-            G,
-            B,
-            A,
+            R2d,
+            G2d,
+            B2d,
+            A1d,
         } = imgD.getData(img)
 
-        this.A = A
+        this.A1d = A1d
         this.width = width
         this.height = height
 
         // 如果宽高非偶数，图像补白边
         if (width % 2 !== 0) {
             this.addWidth = true
-            R = R.map(item => {
+            R2d = R2d.map(item => {
                 item[width] = 0;
                 return item
             })
-            G = G.map(item => {
+            G2d = G2d.map(item => {
                 item[width] = 0;
                 return item
             })
-            B = B.map(item => {
+            B2d = B2d.map(item => {
                 item[width] = 0;
                 return item
             })
@@ -69,29 +69,19 @@ class WaterMark {
 
         if (height % 2 !== 0) {
             this.addHeight = true
-            R[height] = new Array(width).fill(0)
-            G[height] = new Array(width).fill(0)
-            B[height] = new Array(width).fill(0)
+            R2d[height] = new Array(width).fill(0)
+            G2d[height] = new Array(width).fill(0)
+            B2d[height] = new Array(width).fill(0)
         }
 
-        [R, G, B].forEach((item, index) => {
+        [R2d, G2d, B2d].forEach((item, index) => {
             let [low, height] = privateWt.dwt(item)
             this.lowChannel[index] = low
             this.heightChannel[index] = height
         })
-
-        this.lowChannel = this.lowChannel.map((channal) => {
-            let {
-                fullRowNun,
-                fullColumnNun,
-                result
-            } = strided.strided4(channal, this.blockShape)
-            this.fullRowNun = fullRowNun
-            this.fullColumnNun = fullColumnNun
-            return result
-        })
     }
 
+    // 读水印
     readWm(wm, wmType = 'bool') {
         if (!wm) {
             console.error('请输入水印', wm)
@@ -103,7 +93,16 @@ class WaterMark {
                 return
             }
 
-            let lowChannelMaxLength = this.lowChannel.length * this.lowChannel[0].length
+            let {
+                width,
+                height,
+                blockShape,
+            } = this
+
+            let maxWidth = Math.floor((width + 1) / (2 * blockShape))
+            let maxHeight = Math.floor((height + 1) / blockShape)
+
+            let lowChannelMaxLength = maxWidth * maxHeight
 
             if (wm.length > lowChannelMaxLength) {
                 console.error(`最多可嵌入${lowChannelMaxLength / 1000}kb信息，当前信息过大约为${wm.length / 1000}`)
@@ -141,58 +140,28 @@ class WaterMark {
             return
         }
 
-        // 低频分量打水印
-        this.lowChannel.forEach((channel) => {
-            let position = 0
-            for (let i = 0; i < this.fullRowNun; i++) {
-                for (let j = 0; j < this.fullColumnNun; j++) {
-                    let item = channel[i][j]
-                    let password = this.wmBoolList[position % this.wmLength]
-                    position++
-                    channel[i][j] = matrixPassword.encode(item, password)
-                }
-            }
-        })
-
-        let [R, G, B] = this.lowChannel.map((channel, index) => {
-            let towDData = strided.spreadStrided4(channel)  // 2 维化
-            let channelData = privateWt.idwt(towDData, this.heightChannel[index])
-            if (this.addHeight) {
-                channelData.pop()
-            }
-            if (this.addWidth) {
-                channelData.forEach((item) => item.pop())
-            }
-            return channelData
-        })
-
         let {
-            A,
+            A1d,
             width,
             height,
+            lowChannel,
+            heightChannel,
+            wmBoolList,
+            addHeight,
+            addWidth,
+            blockShape,
         } = this
 
-        this.lowChannel = []
-        this.heightChannel = []
-        this.wmBoolList = []
-        this.addWidth = false
-        this.addHeight = false
-
-        imgD.setData({R, G, B, A, width, height}, true, name)
-    }
-
-    addWm({originImg, wm, wmType, name}) {
-        this.readImg(originImg)
-        this.readWm(wm, wmType)
-        this.mixWm(name)
-        return new Promise((res) => {
-            let wmLength =  this.wmLength
-            if (wmType === 'img') {
-                wmLength = this.imgWmSize
-            }
-            res({
-                wmLength
-            })
+        mixWatermark({
+            lowChannel,
+            heightChannel,
+            wmBoolList,
+            addHeight,
+            addWidth,
+            blockShape,
+        }).then(([R, G, B]) => {
+            this.resetData()
+            imgD.setData({R, G, B, A: A1d, width, height}, true, name)
         })
     }
 
@@ -222,13 +191,28 @@ class WaterMark {
             currentTypeWmLength = wmLength[0] * wmLength[1]
         }
 
+        this.resetData()
         this.readImg(wmImg)
         let passWordList = []
-        let channelWm = this.lowChannel.map((channel) => {
+        let fullRowNun,
+            fullColumnNun
+        let {
+            lowChannel,
+            blockShape,
+        } = this
+
+        lowChannel = lowChannel.map((channal) => {
+            let obj = strided.strided4(channal, blockShape)
+            fullRowNun = obj.fullRowNun
+            fullColumnNun = obj.fullColumnNun
+            return obj.result
+        })
+
+        let channelWm = lowChannel.map((channel) => {
             let result = []
             let position = 0
-            for (let i = 0; i < this.fullRowNun; i++) {
-                for (let j = 0; j < this.fullColumnNun; j++) {
+            for (let i = 0; i < fullRowNun; i++) {
+                for (let j = 0; j < fullColumnNun; j++) {
                     let item = channel[i][j]
                     let password = matrixPassword.decode(item)
                     let index = [position % currentTypeWmLength]
@@ -252,10 +236,24 @@ class WaterMark {
             })
         })
     }
+
+    async addWm({originImg, wm, wmType, name}) {
+        this.resetData()
+        this.readImg(originImg)
+        this.readWm(wm, wmType)
+        await this.mixWm(name)
+        return new Promise((res) => {
+            let wmLength = this.wmLength
+            if (wmType === 'img') {
+                wmLength = this.imgWmSize
+            }
+            res({
+                wmLength
+            })
+        })
+    }
 }
 
 let bwm = new WaterMark();
 
-// module.exports = bwm
-// export {bwm}
 export default bwm
