@@ -102,7 +102,8 @@ npm run start
 [changelog](https://github.com/Sherryer/blind-watermark/blob/master/scripts/blind-watermark/changelog.md)
 
 ## 计划
-1. 考虑不阻塞 js 主线程的计算方案，当然计算时间也会增加。 ✅
+1. 考虑不阻塞 js 主线程的计算方案。 ✅
 1. 算法优化，增加水印抗攻击能力。
 1. 考虑是否放开水印密度、鲁棒性系数等参数的配置。合理的系数配置可以增加 **水印最大容量** 、 **减少噪声**、 **减少嵌入水印时间** 。但配置不当会对水印后图片产生较大或很大噪声。
+1. 考虑水印密钥是否需要复杂化。
 
