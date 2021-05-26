@@ -36,7 +36,7 @@ class WaterMark {
     }
 
     // 读原图，获取 rgb 通道低频分量、低频分量四维化
-    readImg(img) {
+    async readImg(img) {
         let {
             width,
             height,
@@ -44,7 +44,7 @@ class WaterMark {
             G2d,
             B2d,
             A1d,
-        } = imgD.getData(img)
+        } = await imgD.getData(img)
 
         this.A1d = A1d
         this.width = width
@@ -82,7 +82,7 @@ class WaterMark {
     }
 
     // 读水印
-    readWm(wm, wmType = 'bool') {
+    async readWm(wm, wmType = 'bool') {
         if (!wm) {
             console.error('请输入水印', wm)
             return
@@ -121,12 +121,13 @@ class WaterMark {
             return
         }
 
+        //  todo 是否要加 await？
         if (wmType === 'img') {
             let {
                 width,
                 height,
                 data
-            } = imgD.getTwoEnds(wm)
+            } = await imgD.getTwoEnds(wm)
             this.imgWmSize = [width, height]
             this.readWm(data, 'bool')
             return
@@ -165,7 +166,7 @@ class WaterMark {
         })
     }
 
-    extract({wmImg, wmLength, wmType, name}) {
+    async extract({wmImg, wmLength, wmType, name}) {
         if (!wmLength) {
             console.error('请输入水印长度, 水印类型为 string bool 时，wmLength 输入数字，水印类型为 img 时，wmLength 为二维数组代表图片宽高 [width, height]', wmLength)
             return
@@ -192,7 +193,7 @@ class WaterMark {
         }
 
         this.resetData()
-        this.readImg(wmImg)
+        await this.readImg(wmImg)
         let passWordList = []
         let fullRowNun,
             fullColumnNun
@@ -239,8 +240,8 @@ class WaterMark {
 
     async addWm({originImg, wm, wmType, name}) {
         this.resetData()
-        this.readImg(originImg)
-        this.readWm(wm, wmType)
+        await this.readImg(originImg)
+        await this.readWm(wm, wmType)
         await this.mixWm(name)
         return new Promise((res) => {
             let wmLength = this.wmLength

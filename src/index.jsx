@@ -1,7 +1,7 @@
 import React, {useRef, useState} from 'react'
 import {render} from 'react-dom'
-import watermark from 'blind-watermark'
-// import watermark from '../scripts/blind-watermark/lib/index'
+// import watermark from 'blind-watermark'
+import watermark from '../scripts/blind-watermark/lib/index'
 
 var bl = [true, true, false, false, true]
 var str = '测试数据噢'
@@ -17,18 +17,10 @@ let AddWm = () => {
     let [string, setStr] = useState(str)
 
     let onChange = (e) => {
-        var reader = new FileReader();
-        reader.onload = function (evt) {
-            img.current.src = evt.target.result;
-        }
-        reader.readAsDataURL(e.target.files[0])
+        img.current.src = window.URL.createObjectURL(e.target.files[0])
     }
     let wmChange = (e) => {
-        var reader = new FileReader();
-        reader.onload = function (evt) {
-            wmImg.current.src = evt.target.result;
-        }
-        reader.readAsDataURL(e.target.files[0])
+        wmImg.current.src = window.URL.createObjectURL(e.target.files[0])
     }
 
     const load = () => {
@@ -95,11 +87,7 @@ let Extract = () => {
     let [length, setLength] = useState(5)
 
     let onChange = (e) => {
-        var reader = new FileReader();
-        reader.onload = function (evt) {
-            img.current.src = evt.target.result;
-        }
-        reader.readAsDataURL(e.target.files[0])
+        img.current.src = window.URL.createObjectURL(e.target.files[0])
     }
 
     const load = () => {
@@ -134,6 +122,21 @@ let Extract = () => {
     )
 }
 
+let EasyUse = () => {
+    let onChange = (e) => {
+        watermark.addWm({originImg: e.target.files, wm: str, wmType: 'string'})
+    }
+    return (
+        <div>
+            <h4>originImg 传入 FileList、File</h4>
+            <div>originImg 传入 FileList 时会取 FileList[0]</div>
+            <div>水印：{str}</div>
+            <input onChange={onChange} type="file"/>
+
+        </div>
+    )
+}
+
 let App = () => {
     return (
         <div>
@@ -144,6 +147,8 @@ let App = () => {
 
             <h4>图片解水印</h4>
             <Extract/>
+
+            <EasyUse/>
         </div>
     )
 }

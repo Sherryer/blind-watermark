@@ -50,6 +50,22 @@ const getCanvasDom = () => {
 }
 
 const getData = (img) => {
+    if (img instanceof FileList) {
+        img = img[0]
+    }
+    if (!(img instanceof File && img.type.includes('image'))) {
+        return Promise.resolve(getDataByDom(img))
+    }
+    return new Promise((res) => {
+        const imgDom = new Image();
+        imgDom.onload = function(){
+            res(getDataByDom(imgDom))
+        }
+        imgDom.src = window.URL.createObjectURL(img)
+    })
+}
+
+const getDataByDom = (img) => {
     if (!(img.tagName?.toLowerCase() === 'img')) {
         console.error('未传入图片dom', img)
         return
@@ -160,7 +176,7 @@ const setData = async ({R, G, B, A = [], width, height}, downLoad, name = 'downl
 }
 
 // 二值化，算法比较简单，适用于简单黑白图。不考虑透明度
-const getTwoEnds = (img) => {
+const getTwoEnds = async (img) => {
     let {
         width,
         height,
@@ -168,7 +184,7 @@ const getTwoEnds = (img) => {
         G1d,
         B1d,
         A1d,
-    } = getData(img)
+    } = await getData(img)
 
     let data = A1d.map((a, index) => {
         let gray = Math.max((R1d[index], G1d[index], B1d[index]))

@@ -36,21 +36,21 @@ import watermark from 'blind-watermark'
 
 ```js
 1. 布尔数组
-watermark.addWm({originImg: imgDom, wm:[true, true, false, false] , wmType: 'bool'}).then(val => val.wmLength)
+watermark.addWm({originImg: img, wm:[true, true, false, false] , wmType: 'bool'}).then(val => val.wmLength)
 
 2. 字符串
-watermark.addWm({originImg: imgDom, wm: '测试数据噢', wmType: 'string'}).then(val => val.wmLength)
+watermark.addWm({originImg: img, wm: '测试数据噢', wmType: 'string'}).then(val => val.wmLength)
 
 3. 图片水印
-watermark.addWm({originImg: imgDom, wm: waterMarkImgDom, wmType: 'img'}).then(val => val.wmLength)
+watermark.addWm({originImg: img, wm: waterMarkImgDom, wmType: 'img'}).then(val => val.wmLength)
 
 imgDom、waterMarkImgDom 均为原图 img 标签。
 ```
 
-|  参数   | 说明  | 类型 | 可选值 | 默认值 | 必填 |
-|  ----  | ----  |  ----  |  ----  |  ----  | ----  | 
-| originImg  | 原图 | img 标签 | - | - | 是
-| wm  | 水印内容 | 数组、字符串、img标签 | - | - | 是
+|  参数   | 说明  | 类型 | 可选值 | 默认值 | 必填 | 备注 |
+|  ----  | ----  |  ----  |  ----  |  ----  | ----  | ----  | 
+| originImg  | 原图 | img 标签、File、FileList | - | - | 是 | FileList 只会取 FileList[0] 进行计算
+| wm  | 水印内容 | 数组、字符串、(img标签、File、FileList) | - | - | 是 | FileList 只会取 FileList[0] 进行计算
 | wmType | 水印类型 | 字符串 | 'bool' 'string' 'img' | - | 是
 | name | 生成图片名称 | 字符串 | - | 'download' | 否
 
@@ -58,20 +58,20 @@ imgDom、waterMarkImgDom 均为原图 img 标签。
 
 ```js
 1. 布尔数组
-watermark.extract({wmImg: imgDom, wmLength: 5, wmType: 'bool'}).then(val => val.wm)
+watermark.extract({wmImg: img, wmLength: 5, wmType: 'bool'}).then(val => val.wm)
 
 2. 字符串
-watermark.extract({wmImg: imgDom, wmLength: 5, wmType: 'string'}).then(val => val.wm)
+watermark.extract({wmImg: img, wmLength: 5, wmType: 'string'}).then(val => val.wm)
 
 3. 图片水印
-watermark.extract({wmImg: imgDom, wmLength: [50, 20], wmType: 'img'}).then(val => val.wm)
+watermark.extract({wmImg: img, wmLength: [50, 20], wmType: 'img'}).then(val => val.wm)
 
 imgDom 为水印图 img 标签。图片水印会直接下载。
 ```
 
-|  参数   | 说明  | 类型 | 可选值 | 默认值 |  必填 |
-|  ----  | ----  |  ----  |  ----  |  ----  |  ----  |
-| wmImg  | 水印图 | img 标签 | - | - | 是 |
+|  参数   | 说明  | 类型 | 可选值 | 默认值 |  必填 | 备注 |
+|  ----  | ----  |  ----  |  ----  |  ----  |  ----  | ----  |
+| wmImg  | 水印图 | img 标签、File、FileList | - | - | 是 | FileList 只会取 FileList[0] 进行计算
 | wmType | 水印类型 | 字符串 | 'bool' 'string' 'img' | - | 是 |
 | wmLength  | 水印长度，wmType 为 'img' 时，需传入水印图片waterMarkImgDom 的 [宽， 高] | 数组、数字 | - | - | 是 |
 | name | 生成图片名称 | 字符串 | - | 'download' |
@@ -103,7 +103,7 @@ npm run start
 
 ## 计划
 1. 考虑不阻塞 js 主线程的计算方案。 ✅
-1. 算法优化，增加水印抗攻击能力。
-1. 考虑是否放开水印密度、鲁棒性系数等参数的配置。合理的系数配置可以增加 **水印最大容量** 、 **减少噪声**、 **减少嵌入水印时间** 。但配置不当会对水印后图片产生较大或很大噪声。
-1. 考虑水印密钥是否需要复杂化。
+1. 算法优化，增加水印鲁棒性。
+1. 考虑 是否、如何 放开水印密度、鲁棒性系数等参数的自定义配置。合理的系数配置可以增加 **水印最大容量** 、 **减少噪声**、 **减少嵌入水印时间** 。但配置不当会对水印后图片产生较大或很大噪声。
+1. 考虑水印密钥优化，由现在的长度+类型优化为密钥。
 
