@@ -44,7 +44,7 @@ class WaterMark {
             G2d,
             B2d,
             A1d,
-        } = await imgD.getData(img)
+        } = await imgD.getData(img, true)
 
         this.A1d = A1d
         this.width = width
@@ -121,7 +121,6 @@ class WaterMark {
             return
         }
 
-        //  todo 是否要加 await？
         if (wmType === 'img') {
             let {
                 width,
@@ -166,6 +165,7 @@ class WaterMark {
         })
     }
 
+    // 解水印
     async extract({wmImg, wmLength, wmType, name}) {
         if (!wmLength) {
             console.error('请输入水印长度, 水印类型为 string bool 时，wmLength 输入数字，水印类型为 img 时，wmLength 为二维数组代表图片宽高 [width, height]', wmLength)
@@ -229,6 +229,7 @@ class WaterMark {
         })
 
         let wmList = passWordList.map((arr) => (eval(arr.join('+')) / arr.length) > 0.5)
+        // let numList = passWordList.map((arr) => (eval(arr.join('+')) / arr.length))
 
         let result = getWmResult(wmList, wmType, wmLength, name)
         return new Promise((res, rej) => {

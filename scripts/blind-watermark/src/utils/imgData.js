@@ -49,23 +49,23 @@ const getCanvasDom = () => {
     return canvas
 }
 
-const getData = (img) => {
+const getData = (img, readOriginImg) => {
     if (img instanceof FileList) {
         img = img[0]
     }
     if (!(img instanceof File && img.type.includes('image'))) {
-        return Promise.resolve(getDataByDom(img))
+        return Promise.resolve(getDataByDom(img, readOriginImg))
     }
     return new Promise((res) => {
         const imgDom = new Image();
         imgDom.onload = function(){
-            res(getDataByDom(imgDom))
+            res(getDataByDom(imgDom, readOriginImg))
         }
         imgDom.src = window.URL.createObjectURL(img)
     })
 }
 
-const getDataByDom = (img) => {
+const getDataByDom = (img, readOriginImg) => {
     if (!(img.tagName?.toLowerCase() === 'img')) {
         console.error('未传入图片dom', img)
         return
@@ -108,6 +108,10 @@ const getDataByDom = (img) => {
     let util1dArr = [R1d, G1d, B1d, A1d]
 
     data.forEach((value, index) => {
+        // 如果在读原图，则将 255 修改为 254，以提高水印算法的鲁棒性
+        if (readOriginImg) {
+            +value === 255 ? value = 254 : ''
+        }
         let location = index % 4
         let position = Math.floor(index / 4)
 

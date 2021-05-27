@@ -1,6 +1,6 @@
 // 转置矩阵
 const transform = (array) => {
-    if (!array || !array[0] || !array[0][0]) {
+    if (!array || !array[0] || array[0][0] === undefined) {
         console.error('请输入二维矩阵')
         return
     }

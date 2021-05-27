@@ -16,3 +16,7 @@
 ### 0.0.10
 
 1. originImg、wm、wmImg 字段在支持 dom 的基础上额外支持 File 和 FileList，其中 FileList 只会读取 FileList[0] 的数据
+
+### 0.0.11
+
+1. 优化纯白图片的水印效果
