@@ -53,20 +53,19 @@ imgDom、waterMarkImgDom 均为原图 img 标签。
 | wm  | 水印内容 | 数组、字符串、(img标签、File、FileList) | - | - | 是 | FileList 只会取 FileList[0] 进行计算
 | wmType | 水印类型 | 字符串 | 'bool' 'string' 'img' | - | 是
 | name | 生成图片名称 | 字符串 | - | 'download' | 否
+| download | 下载生成后的水印图 | 布尔 | true false | true | 否
 
 ### 解水印
 
 ```js
 1. 布尔数组
-watermark.extract({wmImg: img, wmLength: 5, wmType: 'bool'}).then(val => val.wm)
+watermark.extract({wmImg: img, wmLength: 5, wmType: 'bool'}).then(val => {})
 
 2. 字符串
-watermark.extract({wmImg: img, wmLength: 5, wmType: 'string'}).then(val => val.wm)
+watermark.extract({wmImg: img, wmLength: 5, wmType: 'string'}).then(val => {})
 
 3. 图片水印
-watermark.extract({wmImg: img, wmLength: [50, 20], wmType: 'img'}).then(val => val.wm)
-
-imgDom 为水印图 img 标签。图片水印会直接下载。
+watermark.extract({wmImg: img, wmLength: [50, 20], wmType: 'img'}).then(val => {})
 ```
 
 |  参数   | 说明  | 类型 | 可选值 | 默认值 |  必填 | 备注 |

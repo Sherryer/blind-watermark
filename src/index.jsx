@@ -23,7 +23,7 @@ let AddWm = () => {
         wmImg.current.src = window.URL.createObjectURL(e.target.files[0])
     }
 
-    const load = () => {
+    const load = async () => {
         let wm;
         if (radioValue === 'bool') {
             wm = JSON.parse(boolList)
@@ -36,7 +36,8 @@ let AddWm = () => {
             wm = wmImg.current
         }
 
-        let res = watermark.addWm({originImg: img.current, wm, wmType: radioValue})
+        let res = await watermark.addWm({originImg: img.current, wm, wmType: radioValue, download: false})
+        console.log(res)
     }
 
     const radioChange = (e) => {

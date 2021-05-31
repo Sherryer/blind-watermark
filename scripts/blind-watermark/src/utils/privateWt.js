@@ -3,8 +3,7 @@ import wt from 'discrete-wavelets'
 
 const dwt = (arr) => {
     if (!arr || arr[0] === undefined || arr[0][0] === undefined) {
-        console.error('private wt need 2d array', arr)
-        return
+        throw new Error('private wt need 2d array')
     }
     let lowPart = []
     let heightPart = []
@@ -21,11 +20,10 @@ const dwt = (arr) => {
 
 const idwt = (lowPart, heightPart) => {
     if (!lowPart || !heightPart) {
-        console.error('请输入低频、高频分量', lowPart, heightPart)
-        return
+        throw new Error('请输入低频、高频分量')
     }
     if (lowPart.length !== heightPart.length) {
-        console.error('请输入长度相同且合法的低频、高频分量')
+        throw new Error('请输入长度相同且合法的低频、高频分量')
     }
     return lowPart.map((item, index) => {
         return wt.idwt(item, heightPart[index], 'haar')

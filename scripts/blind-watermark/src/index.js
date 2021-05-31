@@ -84,13 +84,11 @@ class WaterMark {
     // 读水印
     async readWm(wm, wmType = 'bool') {
         if (!wm) {
-            console.error('请输入水印', wm)
-            return
+            throw new Error('参数错误：请输入水印')
         }
         if (wmType === 'bool') {
             if (wm.find(item => typeof item !== 'boolean')) {
-                console.error('水印中存在非布尔值，请检查', wm)
-                return
+                throw new Error('参数错误：水印中存在非布尔值，请检查')
             }
 
             let {
@@ -105,8 +103,7 @@ class WaterMark {
             let lowChannelMaxLength = maxWidth * maxHeight
 
             if (wm.length > lowChannelMaxLength) {
-                console.error(`最多可嵌入${lowChannelMaxLength / 1000}kb信息，当前信息过大约为${wm.length / 1000}`)
-                return
+                throw new Error(`最多可嵌入${lowChannelMaxLength / 1000}kb信息，当前信息过大约为${wm.length / 1000}`)
             }
 
             this.wmBoolList = wm
@@ -131,11 +128,10 @@ class WaterMark {
             this.readWm(data, 'bool')
             return
         }
-
-        console.error('水印类型错误，请输入 bool | string | img, 当前为', wmType)
+        throw new Error(`参数错误：水印类型错误，请输入 bool | string | img, 当前为 ${wmType}`)
     }
 
-    mixWm(name) {
+    async mixWm(name, download = true) {
         if (this.wmBoolList.length === 0) {
             return
         }
@@ -152,35 +148,31 @@ class WaterMark {
             blockShape,
         } = this
 
-        mixWatermark({
+        let [R, G, B] = await mixWatermark({
             lowChannel,
             heightChannel,
             wmBoolList,
             addHeight,
             addWidth,
             blockShape,
-        }).then(([R, G, B]) => {
-            this.resetData()
-            imgD.setData({R, G, B, A: A1d, width, height}, true, name)
         })
+        this.resetData()
+        return await imgD.setData({R, G, B, A: A1d, width, height}, download, name)
     }
 
     // 解水印
     async extract({wmImg, wmLength, wmType, name}) {
         if (!wmLength) {
-            console.error('请输入水印长度, 水印类型为 string bool 时，wmLength 输入数字，水印类型为 img 时，wmLength 为二维数组代表图片宽高 [width, height]', wmLength)
-            return
+            throw new Error(`参数错误：请输入水印长度, 水印类型为 string bool 时，wmLength 输入数字，水印类型为 img 时，wmLength 为二维数组代表图片宽高 [width, height]`)
         }
         if (wmType === 'string' || wmType === 'bool') {
             if (isNaN(Number(wmLength))) {
-                console.error('wmLength 需为数字，代表水印长度', wmLength)
-                return
+                throw new Error(`参数错误：wmLength 需为数字，代表水印长度`)
             }
         }
         if (wmType === 'img') {
             if (!Array.isArray(wmLength) || wmLength.length !== 2) {
-                console.error('wmLength 需为数组，[width, height]', wmLength)
-                return
+                throw new Error('参数错误：wmLength 需为数组，[width, height]')
             }
         }
 
@@ -239,18 +231,19 @@ class WaterMark {
         })
     }
 
-    async addWm({originImg, wm, wmType, name}) {
+    async addWm({originImg, wm, wmType, name, download}) {
         this.resetData()
         await this.readImg(originImg)
         await this.readWm(wm, wmType)
-        await this.mixWm(name)
+        let data = await this.mixWm(name, download)
         return new Promise((res) => {
             let wmLength = this.wmLength
             if (wmType === 'img') {
                 wmLength = this.imgWmSize
             }
             res({
-                wmLength
+                wmLength,
+                data: data || null
             })
         })
     }

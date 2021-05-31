@@ -3,6 +3,19 @@ const flat = (arr) => {
     return Promise.resolve(arr.flat())
 }
 
+function dataURLToFile(dataurl, name = '') {
+    let arr = dataurl.split(',');
+    let mime = arr[0].match(/:(.*?);/)[1];
+    let bstr = atob(arr[1]);
+    let n = bstr.length;
+    let u8arr = new Uint8Array(n);
+    while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+    let blob = new Blob([u8arr], {type: mime});
+    return new window.File([blob], name, {type: mime})
+}
+
 const click = (node) => {
     try {
         node.dispatchEvent(new MouseEvent("click"));
@@ -67,13 +80,11 @@ const getData = (img, readOriginImg) => {
 
 const getDataByDom = (img, readOriginImg) => {
     if (!(img.tagName?.toLowerCase() === 'img')) {
-        console.error('未传入图片dom', img)
-        return
+        throw new Error('未传入图片dom')
     }
 
     if (img.width === 0 || img.height === 0) {
-        console.error('请输入有效图片')
-        return
+        throw new Error('请输入宽高不为0的有效图片')
     }
 
     let canvas = getCanvasDom();
@@ -156,19 +167,20 @@ const setData = async ({R, G, B, A = [], width, height}, downLoad, name = 'downl
     let ctx = canvas.getContext('2d');
     let insertImgData = ctx.createImageData(width, height);
 
-    for (let index = 0; index < r.length; index++) {
+    for (let index = 0; index < a.length; index++) {
         let realIndex = index * 4
-        insertImgData.data[realIndex] = r[index]
-        insertImgData.data[realIndex + 1] = g[index]
-        insertImgData.data[realIndex + 2] = b[index]
+        insertImgData.data[realIndex] = r[index] || 0
+        insertImgData.data[realIndex + 1] = g[index] || 0
+        insertImgData.data[realIndex + 2] = b[index] || 0
         insertImgData.data[realIndex + 3] = a[index] || 255
     }
 
     ctx.putImageData(insertImgData, 0, 0)
 
+    let dataUrl = canvas.toDataURL()
     if (downLoad) {
         let a = document.createElement("a");
-        a.href = canvas.toDataURL()
+        a.href = dataUrl
         a.download = name;
         setTimeout(function () {
             window.URL.revokeObjectURL(a.href);
@@ -177,6 +189,7 @@ const setData = async ({R, G, B, A = [], width, height}, downLoad, name = 'downl
             click(a);
         }, 0);
     }
+    return dataURLToFile(dataUrl, name)
 }
 
 // 二值化，算法比较简单，适用于简单黑白图。不考虑透明度
