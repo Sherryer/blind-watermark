@@ -36,7 +36,7 @@ let AddWm = () => {
             wm = wmImg.current
         }
 
-        let res = await watermark.addWm({originImg: img.current, wm, wmType: radioValue, download: false})
+        let res = await watermark.addWm({originImg: img.current, wm, wmType: radioValue, download: true})
         console.log(res)
     }
 
