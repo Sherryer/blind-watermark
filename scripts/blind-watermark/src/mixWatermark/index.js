@@ -1,5 +1,5 @@
-import mix from './mix'
-import Worker from './mix.worker.js'
+const mix = require('./mix')
+const Worker = require('./mix.worker.js')
 
 const createPromiseCallback = () => {
     let callback
@@ -12,14 +12,15 @@ const createPromiseCallback = () => {
 }
 
 const workerMix = (arg) => {
-    if (!window.Worker) {
-        return mix(arg)
-    }
-
     let {
         heightChannel,
-        lowChannel
+        lowChannel,
+        type
     } = arg
+
+    if (type ===  'node' || !window.Worker) {
+        return mix(arg)
+    }
 
     let [r, rCallback] = createPromiseCallback()
     let [g, gCallback] = createPromiseCallback()
@@ -28,7 +29,7 @@ const workerMix = (arg) => {
     let callBackList = [rCallback, gCallback, bCallback]
 
     lowChannel.forEach((channel, index) => {
-        let worker = new Worker();
+        let worker = new Worker.default();
         worker.postMessage({
             ...arg,
             lowChannel: [lowChannel[index]],
@@ -42,4 +43,4 @@ const workerMix = (arg) => {
     return Promise.all([r, g, b])
 }
 
-export default workerMix
+module.exports = workerMix

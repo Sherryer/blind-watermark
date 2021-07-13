@@ -7,8 +7,8 @@ blindWatermark 是一个用于给图片嵌入数字水印的前端库。解水�
 水印具有一定的抗攻击能力，比如马赛克、水平裁剪。当前版本垂直剪裁会破坏原图。
 
 
-## Usage
-```js
+## Web Usage
+```
 git clone git@github.com:Sherryer/blind-watermark.git
 
 cd blind-watermark
@@ -19,4 +19,12 @@ npm run start
 ```
 
 ![img](example.png)
+
+## Node Usage
+
+```
+git clone git@github.com:Sherryer/blind-watermark.git
+cd /watermark.js
+node  nodeWm.js
+```
 

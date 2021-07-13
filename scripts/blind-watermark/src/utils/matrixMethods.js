@@ -54,7 +54,7 @@ const dot = (a, b) => {
     return result;
 }
 
-export {
+module.exports = {
     transform,
     diag,
     dot,

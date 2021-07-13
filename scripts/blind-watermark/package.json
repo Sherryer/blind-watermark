@@ -1,6 +1,6 @@
 {
   "name": "blind-watermark",
-  "version": "0.0.12",
+  "version": "0.1.1",
   "description": "img blind watermark by frontend",
   "main": "lib/index.js",
   "scripts": {
@@ -40,6 +40,8 @@
   },
   "dependencies": {
     "discrete-wavelets": "^5.0.7",
+    "fast-png": "^5.0.4",
+    "get-pixels": "^3.3.2",
     "numeric": "^1.2.6"
   }
 }

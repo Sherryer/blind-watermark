@@ -1,4 +1,4 @@
-import mix from './mix'
+const mix = require('./mix')
 
 onmessage = function (event) {
     let arg = event.data;
@@ -7,4 +7,4 @@ onmessage = function (event) {
     })
 };
 
-export default onmessage
+module.exports = onmessage

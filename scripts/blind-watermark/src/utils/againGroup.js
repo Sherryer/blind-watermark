@@ -1,4 +1,4 @@
-export default (data = [], num) => {
+module.exports = (data = [], num) => {
     let baseData = [...data]
     let result = []
 

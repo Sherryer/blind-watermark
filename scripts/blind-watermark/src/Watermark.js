@@ -1,29 +1,15 @@
-import privateWt from './utils/privateWt'
-import imgD from './utils/imgData'
-import strided from './utils/strided'
-import matrixPassword from './utils/matrixPassword'
-import stringCode from './utils/stringCode'
-import mixWatermark from './mixWatermark/index'
-
-const getWmResult = (wmList, type, imgWmShape, name) => {
-    if (type === 'bool') {
-        return wmList
-    }
-
-    if (type === 'string') {
-        let numCode = wmList.map(val => Number(val)).join('')
-        return stringCode.charCode2str(numCode)
-    }
-
-    if (type === 'img') {
-        let [width, height] = imgWmShape
-        imgD.setTwoEnds({data: wmList, width, height}, name)
-    }
-}
+const privateWt = require('./utils/privateWt')
+const imgData = require('./utils/imgData')
+const strided = require('./utils/strided')
+const matrixPassword = require('./utils/matrixPassword')
+const stringCode = require('./utils/stringCode')
+const mixWatermark = require('./mixWatermark/index')
 
 class WaterMark {
     constructor() {
         this.blockShape = 8
+        this.imgHandle = imgData
+        this.mixWatermark = mixWatermark
     }
 
     resetData() {
@@ -44,7 +30,7 @@ class WaterMark {
             G2d,
             B2d,
             A1d,
-        } = await imgD.getData(img, true)
+        } = await this.imgHandle.getData(img, true)
 
         this.A1d = A1d
         this.width = width
@@ -123,7 +109,7 @@ class WaterMark {
                 width,
                 height,
                 data
-            } = await imgD.getTwoEnds(wm)
+            } = await this.imgHandle.getTwoEnds(wm)
             this.imgWmSize = [width, height]
             this.readWm(data, 'bool')
             return
@@ -131,7 +117,7 @@ class WaterMark {
         throw new Error(`参数错误：水印类型错误，请输入 bool | string | img, 当前为 ${wmType}`)
     }
 
-    async mixWm(name, download = true) {
+    async mixWm({ name, download, outputPath }) {
         if (this.wmBoolList.length === 0) {
             return
         }
@@ -148,7 +134,7 @@ class WaterMark {
             blockShape,
         } = this
 
-        let [R, G, B] = await mixWatermark({
+        let [R, G, B] = await this.mixWatermark({
             lowChannel,
             heightChannel,
             wmBoolList,
@@ -157,11 +143,27 @@ class WaterMark {
             blockShape,
         })
         this.resetData()
-        return await imgD.setData({R, G, B, A: A1d, width, height}, download, name)
+        return await this.imgHandle.setData({R, G, B, A: A1d, width, height, download, name})
+    }
+
+    getWmResult (wmList, type, imgWmShape, name, outputPath) {
+        if (type === 'bool') {
+            return wmList
+        }
+
+        if (type === 'string') {
+            let numCode = wmList.map(val => Number(val)).join('')
+            return stringCode.charCode2str(numCode)
+        }
+
+        if (type === 'img') {
+            let [width, height] = imgWmShape
+            this.imgHandle.setTwoEnds({data: wmList, width, height, name, outputPath})
+        }
     }
 
     // 解水印
-    async extract({wmImg, wmLength, wmType, name}) {
+    async extract({wmImg, wmLength, wmType, name, outputPath}) {
         if (!wmLength) {
             throw new Error(`参数错误：请输入水印长度, 水印类型为 string bool 时，wmLength 输入数字，水印类型为 img 时，wmLength 为二维数组代表图片宽高 [width, height]`)
         }
@@ -222,8 +224,9 @@ class WaterMark {
 
         let wmList = passWordList.map((arr) => (eval(arr.join('+')) / arr.length) > 0.5)
         // let numList = passWordList.map((arr) => (eval(arr.join('+')) / arr.length))
+        // console.log(passWordList);
 
-        let result = getWmResult(wmList, wmType, wmLength, name)
+        let result = this.getWmResult(wmList, wmType, wmLength, name, outputPath)
         return new Promise((res, rej) => {
             res({
                 wm: result
@@ -231,11 +234,15 @@ class WaterMark {
         })
     }
 
-    async addWm({originImg, wm, wmType, name, download}) {
+    async addWm({ originImg, wm, wmType, name, download, outputPath }) {
         this.resetData()
         await this.readImg(originImg)
         await this.readWm(wm, wmType)
-        let data = await this.mixWm(name, download)
+        let {
+            File,
+            base64,
+            filePath
+        } = await this.mixWm({ name, download, outputPath })
         return new Promise((res) => {
             let wmLength = this.wmLength
             if (wmType === 'img') {
@@ -243,12 +250,12 @@ class WaterMark {
             }
             res({
                 wmLength,
-                data: data || null
+                File,
+                base64,
+                filePath
             })
         })
     }
 }
 
-let bwm = new WaterMark();
-
-export default bwm
+module.exports = WaterMark

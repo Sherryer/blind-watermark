@@ -1,15 +1,4 @@
-const againGroup = (data = [], num) => {
-    let baseData = [...data]
-    let result = []
-
-    for (let i = 0, len = baseData.length; i < len; i += num) {
-        let partData = data.slice(i, i + num)
-        if (partData.length) {
-            result.push(partData)
-        }
-    }
-    return result
-}
+const againGroup = require('./againGroup')
 
 // 4 维度分块
 const strided4 = (arr, shape = 4) => {
@@ -70,7 +59,7 @@ const spreadStrided4 = (arr) => {
     return result
 }
 
-export default {
+module.exports = {
     strided4,
     spreadStrided4
 }

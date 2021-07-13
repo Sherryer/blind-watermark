@@ -1,8 +1,8 @@
-import matrixPassword from "../utils/matrixPassword";
-import strided from "../utils/strided";
-import privateWt from "../utils/privateWt";
+const matrixPassword = require('../utils/matrixPassword')
+const strided = require('../utils/strided')
+const privateWt = require('../utils/privateWt')
 
-export default ({
+module.exports = ({
     lowChannel,
     heightChannel,
     wmBoolList,
