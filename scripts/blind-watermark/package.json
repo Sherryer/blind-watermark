@@ -1,6 +1,6 @@
 {
   "name": "blind-watermark",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "img blind watermark by frontend",
   "main": "lib/index.js",
   "scripts": {

@@ -1,7 +1,7 @@
 // 转置矩阵
 const transform = (array) => {
     if (!array || !array[0] || array[0][0] === undefined) {
-        throw new Error('二维矩阵不合法')
+        return Promise.reject('二维矩阵不合法')
         return
     }
     let m = array.length // 行
@@ -34,7 +34,7 @@ const diag = (arr) => {
 // 矩阵乘法
 const dot = (a, b) => {
     if (a[0].length !== b.length) {
-        throw new Error('矩阵不匹配，无法点乘');
+        return Promise.reject('矩阵不匹配，无法点乘');
     }
     let m = a.length;
     let p = a[0].length;

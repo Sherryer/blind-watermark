@@ -90,11 +90,11 @@ const getData = (img, readOriginImg) => {
 
 const getDataByDom = (img, readOriginImg) => {
     if (!(img.tagName && img.tagName.toLowerCase() === 'img')) {
-        throw new Error('未传入图片dom')
+        return Promise.reject('未传入图片dom')
     }
 
     if (img.width === 0 || img.height === 0) {
-        throw new Error('请输入宽高不为0的有效图片')
+        return Promise.reject('请输入宽高不为0的有效图片')
     }
 
     let canvas = getCanvasDom();

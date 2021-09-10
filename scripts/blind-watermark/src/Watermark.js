@@ -70,11 +70,11 @@ class WaterMark {
     // 读水印
     async readWm(wm, wmType = 'bool') {
         if (!wm) {
-            throw new Error('参数错误：请输入水印')
+            return Promise.reject('参数错误：请输入水印')
         }
         if (wmType === 'bool') {
             if (wm.find(item => typeof item !== 'boolean')) {
-                throw new Error('参数错误：水印中存在非布尔值，请检查')
+                return Promise.reject('参数错误：水印中存在非布尔值，请检查')
             }
 
             let {
@@ -89,7 +89,7 @@ class WaterMark {
             let lowChannelMaxLength = maxWidth * maxHeight
 
             if (wm.length > lowChannelMaxLength) {
-                throw new Error(`最多可嵌入${lowChannelMaxLength / 1000}kb信息，当前信息过大约为${wm.length / 1000}`)
+                return Promise.reject(`最多可嵌入${lowChannelMaxLength / 1000}kb信息，当前信息过大约为${wm.length / 1000}`)
             }
 
             this.wmBoolList = wm
@@ -100,8 +100,7 @@ class WaterMark {
         if (wmType === 'string') {
             let code = stringCode.str2charCode(wm)
             let boolList = code.split('').map(val => val == 1)
-            this.readWm(boolList, 'bool')
-            return
+            return this.readWm(boolList, 'bool')
         }
 
         if (wmType === 'img') {
@@ -111,17 +110,15 @@ class WaterMark {
                 data
             } = await this.imgHandle.getTwoEnds(wm)
             this.imgWmSize = [width, height]
-            this.readWm(data, 'bool')
-            return
+            return this.readWm(data, 'bool')
         }
-        throw new Error(`参数错误：水印类型错误，请输入 bool | string | img, 当前为 ${wmType}`)
+        return Promise.reject(`参数错误：水印类型错误，请输入 bool | string | img, 当前为 ${wmType}`)
     }
 
     async mixWm({ name, download, outputPath }) {
         if (this.wmBoolList.length === 0) {
             return
         }
-
         let {
             A1d,
             width,
@@ -133,7 +130,6 @@ class WaterMark {
             addWidth,
             blockShape,
         } = this
-
         let [R, G, B] = await this.mixWatermark({
             lowChannel,
             heightChannel,
@@ -165,16 +161,16 @@ class WaterMark {
     // 解水印
     async extract({wmImg, wmLength, wmType, name, outputPath}) {
         if (!wmLength) {
-            throw new Error(`参数错误：请输入水印长度, 水印类型为 string bool 时，wmLength 输入数字，水印类型为 img 时，wmLength 为二维数组代表图片宽高 [width, height]`)
+            return Promise.reject(`参数错误：请输入水印长度, 水印类型为 string bool 时，wmLength 输入数字，水印类型为 img 时，wmLength 为二维数组代表图片宽高 [width, height]`)
         }
         if (wmType === 'string' || wmType === 'bool') {
             if (isNaN(Number(wmLength))) {
-                throw new Error(`参数错误：wmLength 需为数字，代表水印长度`)
+                return Promise.reject(`参数错误：wmLength 需为数字，代表水印长度`)
             }
         }
         if (wmType === 'img') {
             if (!Array.isArray(wmLength) || wmLength.length !== 2) {
-                throw new Error('参数错误：wmLength 需为数组，[width, height]')
+                return Promise.reject('参数错误：wmLength 需为数组，[width, height]')
             }
         }
 
@@ -236,24 +232,26 @@ class WaterMark {
 
     async addWm({ originImg, wm, wmType, name, download, outputPath }) {
         this.resetData()
-        await this.readImg(originImg)
-        await this.readWm(wm, wmType)
-        let {
-            File,
-            base64,
-            filePath
-        } = await this.mixWm({ name, download, outputPath })
-        return new Promise((res) => {
-            let wmLength = this.wmLength
-            if (wmType === 'img') {
-                wmLength = this.imgWmSize
-            }
-            res({
-                wmLength,
-                File,
-                base64,
-                filePath
-            })
+        return new Promise(async (res, rej) => {
+            this.readImg(originImg)
+                .then(() => this.readWm(wm, wmType))
+                .then(() => this.mixWm({ name, download, outputPath }).catch(e => rej(e)))
+                .then(({
+                    File,
+                    base64,
+                    filePath
+                }) => {
+                    let wmLength = this.wmLength
+                    if (wmType === 'img') {
+                        wmLength = this.imgWmSize
+                    }
+                    res({
+                        wmLength,
+                        File,
+                        base64,
+                        filePath
+                    })
+                }).catch((e) => rej(e))
         })
     }
 }

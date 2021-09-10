@@ -43,7 +43,7 @@ const getUSV = (matrix) => {
             heightPosition++
         }
         if (heightPosition >= height) {
-            throw new Error('bad matrix case')
+            return Promise.reject('bad matrix case')
         }
     }
 

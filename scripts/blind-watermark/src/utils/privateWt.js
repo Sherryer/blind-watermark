@@ -3,7 +3,7 @@ const wt = require('discrete-wavelets')
 
 const dwt = (arr) => {
     if (!arr || arr[0] === undefined || arr[0][0] === undefined) {
-        throw new Error('private wt need 2d array')
+        return Promise.reject('private wt need 2d array')
     }
     let lowPart = []
     let heightPart = []
@@ -21,10 +21,10 @@ const dwt = (arr) => {
 
 const idwt = (lowPart, heightPart) => {
     if (!lowPart || !heightPart) {
-        throw new Error('请输入低频、高频分量')
+        return Promise.reject('请输入低频、高频分量')
     }
     if (lowPart.length !== heightPart.length) {
-        throw new Error('请输入长度相同且合法的低频、高频分量')
+        return Promise.reject('请输入长度相同且合法的低频、高频分量')
     }
     return lowPart.map((item, index) => {
         let result

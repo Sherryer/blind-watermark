@@ -1,7 +1,7 @@
 import React, {useRef, useState} from 'react'
 import {render} from 'react-dom'
-import watermark from 'blind-watermark'
-// import watermark from '../scripts/blind-watermark/lib/index'
+// import watermark from 'blind-watermark'
+import watermark from '../scripts/blind-watermark/lib/index'
 
 var bl = [true, true, false, false, true]
 var str = '测试数据噢'
@@ -36,7 +36,9 @@ let AddWm = () => {
             wm = wmImg.current
         }
         let res = await watermark.addWm({originImg: img.current, wm, wmType: radioValue, download: true})
-        console.log(res)
+            .catch((e) => {
+            console.log('添加水印失败：', e);
+        })
     }
 
     const radioChange = (e) => {
