@@ -10,7 +10,7 @@ class NodeWaterMark extends WaterMark {
     }
 
     addWm({originImg, wm, wmType, name, outputPath}) {
-        return super.addWm({originImg, wm, wmType, name, download: outputPath})
+        return super.addWm({originImg, wm, wmType, name, outputPath})
     }
 }
 

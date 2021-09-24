@@ -99,7 +99,7 @@ class WaterMark {
 
         if (wmType === 'string') {
             let code = stringCode.str2charCode(wm)
-            let boolList = code.split('').map(val => val == 1)
+            let boolList = code.split('').map(val => +val === 1)
             return this.readWm(boolList, 'bool')
         }
 
@@ -139,7 +139,7 @@ class WaterMark {
             blockShape,
         })
         this.resetData()
-        return await this.imgHandle.setData({R, G, B, A: A1d, width, height, download, name})
+        return await this.imgHandle.setData({R, G, B, A: A1d, width, height, download, name, outputPath})
     }
 
     getWmResult (wmList, type, imgWmShape, name, outputPath) {
@@ -230,7 +230,14 @@ class WaterMark {
         })
     }
 
-    async addWm({ originImg, wm, wmType, name, download, outputPath }) {
+    async addWm({
+        originImg, // 原图
+        wm, // 水印
+        wmType, // 水印类型
+        name, // 图片名称
+        download, // 下载水印图片 仅 web
+        outputPath, // 水印图片存放路径 仅 node
+    }) {
         this.resetData()
         return new Promise(async (res, rej) => {
             this.readImg(originImg)

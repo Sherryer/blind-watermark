@@ -2,7 +2,6 @@
 const transform = (array) => {
     if (!array || !array[0] || array[0][0] === undefined) {
         return Promise.reject('二维矩阵不合法')
-        return
     }
     let m = array.length // 行
     let n = array[0].length // 列
