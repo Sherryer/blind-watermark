@@ -1,4 +1,4 @@
-const mix = require('./mix')
+const mix = require('./mix');
 
 onmessage = function (event) {
     let arg = event.data;
@@ -7,4 +7,4 @@ onmessage = function (event) {
     })
 };
 
-module.exports = onmessage
+module.exports = onmessage;

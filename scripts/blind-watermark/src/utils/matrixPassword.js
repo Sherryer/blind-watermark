@@ -1,5 +1,5 @@
-const numeric = require('numeric')
-const {diag, dot, transform} = require('./matrixMethods')
+const numeric = require('numeric');
+const {diag, dot, transform} = require('./matrixMethods');
 
 const d1 = 20;
 const d2 = 6;
@@ -13,15 +13,15 @@ const getArraySum = (arr) => {
     const getSum = (arr) => {
         arr.forEach((item) => {
             if (Array.isArray(item)) {
-                getSum(item)
+                getSum(item);
                 return
             }
             sum = sum + item
         })
-    }
-    getSum(arr)
+    };
+    getSum(arr);
     return sum
-}
+};
 
 const getUSV = (matrix) => {
     let {
@@ -30,34 +30,34 @@ const getUSV = (matrix) => {
         V
     } = numeric.svd(matrix);
 
-    let height = matrix.length
-    let width = matrix[0].length
+    let height = matrix.length;
+    let width = matrix[0].length;;
 
-    let heightPosition = 0
-    let widthPosition = 0
+    let heightPosition = 0;
+    let widthPosition = 0;
 
     const addPosition = () => {
-        widthPosition++
+        widthPosition++;
         if (widthPosition >= width) {
-            widthPosition = 0
+            widthPosition = 0;
             heightPosition++
         }
         if (heightPosition >= height) {
             return Promise.reject('bad matrix case')
         }
-    }
+    };
 
     while (S.includes(NaN)) {
         matrix[heightPosition][widthPosition] = Math.round(matrix[heightPosition][widthPosition])
         let USV = numeric.svd(matrix);
-        U = USV.U
-        S = USV.S
-        V = USV.V
+        U = USV.U;
+        S = USV.S;
+        V = USV.V;
         addPosition()
     }
 
     return {U, S, V}
-}
+};
 
 const encode = (matrix, password = true) => {
     let {
@@ -66,8 +66,8 @@ const encode = (matrix, password = true) => {
         V
     } = getUSV(matrix);
 
-    S[0] = mixRobust(S[0], d1, password)
-    S[1] = mixRobust(S[1], d2, password)
+    S[0] = mixRobust(S[0], d1, password);
+    S[1] = mixRobust(S[1], d2, password);
 
     return dot(U, dot(diag(S), transform(V)))
 };
@@ -76,7 +76,7 @@ const decode = (matrix, average = 0.5) => {
     // 低频 356 对应 253 以上颜色
     // 如果区域颜色均值大于 356 说明为白色块，无信息记录，不保存密码权重
 
-    let avg = getArraySum(matrix) / (matrix.length * matrix[0].length)
+    let avg = getArraySum(matrix) / (matrix.length * matrix[0].length);
     if (avg > 360) {
         return average
     }
@@ -92,4 +92,4 @@ const decode = (matrix, average = 0.5) => {
 module.exports = {
     encode,
     decode,
-}
+};

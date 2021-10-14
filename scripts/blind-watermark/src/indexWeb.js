@@ -1,5 +1,5 @@
-const WaterMark = require('./Watermark')
+const WaterMark = require('./Watermark');
 
 const bwm = new WaterMark();
 
-module.exports = bwm
+module.exports = bwm;

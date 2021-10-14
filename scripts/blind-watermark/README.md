@@ -35,15 +35,32 @@ import watermark from 'blind-watermark'
 
 ```js
 1. 布尔数组
-watermark.addWm({originImg: img, wm:[true, true, false, false] , wmType: 'bool'}).then(val => val.wmLength)
+watermark.addWm({originImg: img, wm:[true, true, false, false] , wmType: 'bool'}).then(
+({wmLength,
+  File,
+  base64,
+  key,}) => ())
 
 2. 字符串
-watermark.addWm({originImg: img, wm: '测试数据噢', wmType: 'string'}).then(val => val.wmLength)
+watermark.addWm({originImg: img, wm: '测试数据噢', wmType: 'string'}).then(
+({wmLength,
+  File,
+  base64,
+  key,}) => ())
 
 3. 图片水印
-watermark.addWm({originImg: img, wm: waterMarkImgDom, wmType: 'img'}).then(val => val.wmLength)
+watermark.addWm({originImg: img, wm: waterMarkImgDom, wmType: 'img'}).then(
+({wmLength,
+  File,
+  base64,
+  key,}) => ())
 
-imgDom、waterMarkImgDom 均为原图 img 标签。
+
+返回值：
+wmLength：水印长度
+base64：生成图片 base64
+File： 生成图片的 File 格式
+key: 解密密钥 （当 level 大于 2 时候返回 key，key是用于解密的唯一手段。传入key解密时无需传入 wmType、wmLength  ）
 ```
 
 |  参数   | 说明  | 类型 | 可选值 | 默认值 | 必填 | 备注 |
@@ -52,6 +69,7 @@ imgDom、waterMarkImgDom 均为原图 img 标签。
 | wm  | 水印内容 | 数组、字符串、(img标签、File、FileList) | - | - | 是 | FileList 只会取 FileList[0] 进行计算
 | wmType | 水印类型 | 字符串 | 'bool' 'string' 'img' | - | 是
 | name | 生成图片名称 | 字符串 | - | 'download' | 否
+| level | 水印等级 | 数值 | 1 2 3 4 | 2 | 否 | level 是水印的加密等级。等级越高效果越好，耗时越长。 **level 为 3 4 时会返回字段 key，key 是在level为 3 4 时用于解密的唯一方法，请妥善保管**
 | download | 下载生成后的水印图 | 布尔 | true false | true | 否
 
 ### 解水印
@@ -73,6 +91,8 @@ watermark.extract({wmImg: img, wmLength: [50, 20], wmType: 'img'}).then(val => {
 | wmType | 水印类型 | 字符串 | 'bool' 'string' 'img' | - | 是 |
 | wmLength  | 水印长度，wmType 为 'img' 时，需传入水印图片waterMarkImgDom 的 [宽， 高] | 数组、数字 | - | - | 是 |
 | name | 生成图片名称 | 字符串 | - | 'download' |
+| level | 图片加密等级 | 数字 | 1 2 3 4 | 2 | 否 |  level 大于 2 时需要传入 key。key 在加密时获取 |
+| key | 当level 大于 2 时解水印的密钥；传入key 就 **不需要** 传 wmType、wmLength 了  | 字符串 | - | - | 否 | 
 
 ### tips
 
@@ -104,6 +124,7 @@ watermark.addWm({originImg: img, wm: waterMarkImgDom, wmType: 'img'}).then(val =
 wmLength：水印长度
 base64：图片 base64
 filePath： 生成图片路径
+key: 解密密钥 （当 level 大于 2 时候返回 key，key是用于解密的唯一手段。传入key解密时无需传入 wmType、wmLength  ）
 ```
 
 |  参数   | 说明  | 类型 | 可选值 | 默认值 | 必填 | 备注 |
@@ -113,6 +134,7 @@ filePath： 生成图片路径
 | wmType | 水印类型 | 字符串 | 'bool' 'string' 'img' | - | 是
 | name | 生成图片名称 | 字符串 | - | \`output-${new Date().getTime()}` | 否
 | outputPath | 生成图片路径 | string | - | 'blindWaterMarkOutput' | 否
+| level | 水印等级 | 数值 | 1 2 3 4 | 2 | 否 | level 是水印的加密等级。等级越高效果越好，耗时越长。 **level 为 3 4 时会返回字段 key，key 是在level为 3 4 时用于解密的唯一方法，请妥善保管**
 
 ### 解水印
 
@@ -134,6 +156,8 @@ watermark.extract({wmImg: img, wmLength: [50, 20], wmType: 'img'}).then(val => {
 | wmLength  | 水印长度，wmType 为 'img' 时，需传入水印图片waterMarkImgDom 的 [宽， 高] | 数组、数字 | - | - | 是 |
 | name | 生成图片名称 | 字符串 | - | \`output-${new Date().getTime()}` |
 | outputPath | 生成图片路径 | string | - | 'blindWaterMarkOutput' | 否
+| level | 图片加密等级 | 数字 | 1 2 3 4 | 2 | 否 |  level 大于 2 时需要传入 key。key 在加密时获取 |
+| key | 当level 大于 2 时解水印的密钥；传入key 就 **不需要** 传 wmType、wmLength 了  | 字符串 | - | - | 否 | 
 
 ## 例子
 
@@ -165,8 +189,7 @@ node  nodeWm.js
 ## 计划
 1. 考虑不阻塞 js 主线程的计算方案。 ✅
 1. 支持 node。 ✅
+1. 支持 level（水印等级）配置，不同等级差异化水印效果处理。 ✅
 1. 单元测试。
 1. 算法优化，增加水印鲁棒性。
-1. 考虑 是否、如何 放开水印密度、鲁棒性系数等参数的自定义配置。合理的系数配置可以增加 **水印最大容量** 、 **减少噪声**、 **减少嵌入水印时间** 。但配置不当会对水印后图片产生较大或很大噪声。
-1. 考虑水印密钥优化，由现在的长度+类型优化为密钥。
 

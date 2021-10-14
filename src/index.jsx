@@ -35,7 +35,7 @@ let AddWm = () => {
         if (radioValue === 'img') {
             wm = wmImg.current
         }
-        let res = await watermark.addWm({originImg: img.current, wm, wmType: radioValue, download: false})
+        let res = await watermark.addWm({originImg: img.current, wm, wmType: radioValue, download: true})
             .catch((e) => {
             console.log('添加水印失败：', e);
         })
