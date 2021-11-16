@@ -19,7 +19,8 @@ module.exports = ({
         return obj.result
     });
 
-    lowChannel.forEach((channel) => {
+    let lowChannelBlockList = [];
+    lowChannel.forEach((channel, index) => {
         let position = 0;
         for (let i = 0; i < fullRowNun; i++) {
             for (let j = 0; j < fullColumnNun; j++) {
@@ -27,9 +28,16 @@ module.exports = ({
                 let password = wmBoolList[position % wmLength];
                 position++;
                 channel[i][j] = matrixPassword.encode(item, password)
+                lowChannelBlockList.push({
+                    index: position + index * fullRowNun * fullColumnNun,
+                    before: item,
+                    after: channel[i][j]
+                })
             }
         }
     });
+
+    // window.lowChannelBlockList = lowChannelBlockList;
 
     let [R, G, B] = lowChannel.map((channel, index) => {
         let towDData = strided.spreadStrided4(channel);  // 2 维化

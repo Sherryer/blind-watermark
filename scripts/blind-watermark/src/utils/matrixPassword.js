@@ -1,5 +1,5 @@
 const numeric = require('numeric');
-const {diag, dot, transform} = require('./matrixMethods');
+const {diag, dot, transform, getUSV} = require('./matrixMethods');
 
 const d1 = 20;
 const d2 = 6;
@@ -21,42 +21,6 @@ const getArraySum = (arr) => {
     };
     getSum(arr);
     return sum
-};
-
-const getUSV = (matrix) => {
-    let {
-        U,
-        S,
-        V
-    } = numeric.svd(matrix);
-
-    let height = matrix.length;
-    let width = matrix[0].length;;
-
-    let heightPosition = 0;
-    let widthPosition = 0;
-
-    const addPosition = () => {
-        widthPosition++;
-        if (widthPosition >= width) {
-            widthPosition = 0;
-            heightPosition++
-        }
-        if (heightPosition >= height) {
-            return Promise.reject('bad matrix case')
-        }
-    };
-
-    while (S.includes(NaN)) {
-        matrix[heightPosition][widthPosition] = Math.round(matrix[heightPosition][widthPosition])
-        let USV = numeric.svd(matrix);
-        U = USV.U;
-        S = USV.S;
-        V = USV.V;
-        addPosition()
-    }
-
-    return {U, S, V}
 };
 
 const encode = (matrix, password = true) => {

@@ -53,8 +53,46 @@ const dot = (a, b) => {
     return result;
 };
 
+// 求矩阵 svd
+const getUSV = (matrix) => {
+    let {
+        U,
+        S,
+        V
+    } = numeric.svd(matrix);
+
+    let height = matrix.length;
+    let width = matrix[0].length;
+
+    let heightPosition = 0;
+    let widthPosition = 0;
+
+    const addPosition = () => {
+        widthPosition++;
+        if (widthPosition >= width) {
+            widthPosition = 0;
+            heightPosition++
+        }
+        if (heightPosition >= height) {
+            return Promise.reject('bad matrix case')
+        }
+    };
+
+    while (S.includes(NaN)) {
+        matrix[heightPosition][widthPosition] = Math.round(matrix[heightPosition][widthPosition])
+        let USV = numeric.svd(matrix);
+        U = USV.U;
+        S = USV.S;
+        V = USV.V;
+        addPosition()
+    }
+
+    return {U, S, V}
+};
+
 module.exports = {
     transform,
     diag,
     dot,
+    getUSV,
 };

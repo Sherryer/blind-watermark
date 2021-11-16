@@ -55,7 +55,7 @@ const click = (node) => {
 };
 
 const getCanvasDom = () => {
-    let id = 'sherry-chris-b-wm-g-i-c-c';
+    let id = 'sherry-chris-bwm-g-i-c-c';
     let canvas = document.getElementById(id);
     if (!canvas) {
         let dom = document.createElement('canvas');

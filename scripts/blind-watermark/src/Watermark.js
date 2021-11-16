@@ -7,7 +7,7 @@ const { value2Secret, secret2Value } = require('./utils/getReturnSecret');
 const mixWatermark = require('./mixWatermark/index');
 const { defaultConfig, levelConfig, wmTypeConfig } = require('./config');
 
-class WaterMark {
+class ChannelBase {
     constructor() {
         this.blockShape = defaultConfig.blockShape;
         this.channelNumber = levelConfig[defaultConfig.level].channelNumber;
@@ -18,11 +18,7 @@ class WaterMark {
             G2d: null,
             B2d: null,
         };
-
-        this.imgHandle = imgData;
-        this.mixWatermark = mixWatermark
     }
-
     resetData() {
         this.lowChannel = [];
         this.heightChannel = [];
@@ -37,7 +33,6 @@ class WaterMark {
         this.addWidth = false;
         this.addHeight = false;
     }
-
     async setConfig({ level = defaultConfig.level, blockShape }) {
         if (!levelConfig[+level]) {
             return Promise.reject(`level 只能为 1、2、3、4，当前值：${level}`);
@@ -52,6 +47,14 @@ class WaterMark {
         this.blockShape = blockShape || defaultBlockShape;
         this.channelNumber = channelNumber;
         this.returnSecret = returnSecret;
+    }
+}
+
+class ImgMethod extends ChannelBase {
+    constructor() {
+        super();
+        this.imgHandle = imgData;
+        this.mixWatermark = mixWatermark
     }
 
     // 读原图，补白边，分通道，获取 rgb 通道低频分量、低频分量四维化
@@ -137,7 +140,6 @@ class WaterMark {
             if (returnSecret) {
                 this.blockShape = block
             }
-
             this.wmBoolList = wm;
             this.wmLength = wm.length;
             return
@@ -199,18 +201,24 @@ class WaterMark {
         this.resetData();
         return await this.imgHandle.setData({R, G, B, A: A1d, width, height, download, name, outputPath})
     }
+}
+
+class Watermark extends ImgMethod {
+    constructor() {
+        super();
+    }
 
     getWmResult (wmList, type, imgWmShape, name, outputPath) {
-        if (type === 'bool') {
+        if (type === wmTypeConfig.bool) {
             return wmList
         }
 
-        if (type === 'string') {
+        if (type === wmTypeConfig.string) {
             let numCode = wmList.map(val => Number(val)).join('');
             return stringCode.charCode2str(numCode)
         }
 
-        if (type === 'img') {
+        if (type === wmTypeConfig.img) {
             let [width, height] = imgWmShape;
             this.imgHandle.setTwoEnds({data: wmList, width, height, name, outputPath})
         }
@@ -218,7 +226,6 @@ class WaterMark {
 
     // 解水印
     async extract({wmImg, wmLength, wmType, name, outputPath, level = defaultConfig.level, key}) {
-
         let writeBlockShape = null;
         if (key) {
             let {
@@ -274,28 +281,41 @@ class WaterMark {
             return block4.result
         });
 
-        let channelWmArray = lowChannel.map((channel) => {
+        let channelWmAndpassWordList  = [];
+        let channelWmArray = lowChannel.map((channel, index) => {
             let result = [];
             let position = 0;
             for (let i = 0; i < fullRowNun; i++) {
                 for (let j = 0; j < fullColumnNun; j++) {
                     let item = channel[i][j];
                     let password = matrixPassword.decode(item);
-                    let index = [position % currentTypeWmLength];
-                    if (!passWordList[index]) {
-                        passWordList[index] = []
+                    let _index = [position % currentTypeWmLength];
+                    if (!passWordList[_index]) {
+                        passWordList[_index] = []
+                        channelWmAndpassWordList[_index] = []
                     }
-                    passWordList[index].push(password);
+                    passWordList[_index].push(password);
+                    channelWmAndpassWordList[_index].push({password, item, index: position + index*fullRowNun*fullColumnNun});
                     position++;
-                    result.push(password);
+                    result.push({
+                        password,
+                        item
+                    });
                 }
             }
             return result
         });
 
         let wmList = passWordList.map((arr) => (eval(arr.join('+')) / arr.length) > 0.5);
-        // let numList = passWordList.map((arr) => (eval(arr.join('+')) / arr.length))
+        let numList = passWordList.map((arr) => (eval(arr.join('+')) / arr.length))
+        // ⬇️
         // console.log(passWordList);
+        // console.log(channelWmAndpassWordList);
+        // window.channelWmAndpassWordList = channelWmAndpassWordList;
+        // window.matrixPassword = matrixPassword;
+        // window.channelFlag = channelWmArray.flat();
+        // matrixPassword.decode(channelWmAndpassWordList[39][10].item)
+        // ⬆️
         let result = this.getWmResult(wmList, wmType, wmLength, name, outputPath);
         return new Promise((res) => {
             res({
@@ -320,9 +340,9 @@ class WaterMark {
                 .then(() => this.readWm(wm, wmType))
                 .then(() => this.mixWm({ name, download, outputPath }).catch(e => rej(e)))
                 .then(({
-                    File,
-                    base64,
-                    filePath
+                   File,
+                   base64,
+                   filePath
                 }) => {
                     let wmLength = this.wmLength;
                     let key = null;
@@ -344,4 +364,4 @@ class WaterMark {
     }
 }
 
-module.exports = WaterMark;
+module.exports = Watermark;

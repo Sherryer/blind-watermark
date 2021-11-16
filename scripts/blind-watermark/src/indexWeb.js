@@ -1,5 +1,6 @@
 const WaterMark = require('./Watermark');
 
-const bwm = new WaterMark();
-
-module.exports = bwm;
+module.exports = {
+    addWm: (...arg) => new WaterMark().addWm(...arg),
+    extract: (...arg) => new WaterMark().extract(...arg)
+};

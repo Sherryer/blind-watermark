@@ -10,6 +10,7 @@ class NodeWaterMark extends WaterMark {
     }
 }
 
-let bwm = new NodeWaterMark();
-
-module.exports = bwm;
+module.exports = {
+    addWm: (...arg) => new NodeWaterMark().addWm(...arg),
+    extract: (...arg) => new NodeWaterMark().extract(...arg)
+};
