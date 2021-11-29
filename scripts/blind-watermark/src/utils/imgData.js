@@ -130,9 +130,9 @@ const getDataByDom = (img, readOriginImg) => {
         let position = Math.floor(index / 4);
 
         // 如果在读原图，则将 rgb 的 255 修改为 254，以提高水印算法的鲁棒性
-        if (readOriginImg && location !== 3) {
-            +value === 255 ? value = 254 : ''
-        }
+        // if (readOriginImg && location !== 3) {
+        //     +value === 255 ? value = 254 : ''
+        // }
 
         let row = Math.floor(position / width);
         let rowIndex = position % width;

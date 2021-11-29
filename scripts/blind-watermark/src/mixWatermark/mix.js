@@ -27,7 +27,7 @@ module.exports = ({
                 let item = channel[i][j];
                 let password = wmBoolList[position % wmLength];
                 position++;
-                channel[i][j] = matrixPassword.encode(item, password)
+                channel[i][j] = matrixPassword.encode(item, password);
                 lowChannelBlockList.push({
                     index: position + index * fullRowNun * fullColumnNun,
                     before: item,

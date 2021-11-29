@@ -12,6 +12,7 @@ class ChannelBase {
         this.blockShape = defaultConfig.blockShape;
         this.channelNumber = levelConfig[defaultConfig.level].channelNumber;
         this.returnSecret = defaultConfig.returnSecret;
+        this.level = null;
 
         this.singleChannel2dArray = {
             R2d: null,
@@ -34,6 +35,7 @@ class ChannelBase {
         this.addHeight = false;
     }
     async setConfig({ level = defaultConfig.level, blockShape }) {
+        this.level = level;
         if (!levelConfig[+level]) {
             return Promise.reject(`level 只能为 1、2、3、4，当前值：${level}`);
         }
@@ -129,7 +131,8 @@ class ImgMethod extends ChannelBase {
                 return Promise.reject(`最多可嵌入${lowChannelMaxLength / 1000}kb信息，当前信息过大约为${wm.length / 1000}`)
             }
 
-            // 根据水印长度做 block 缩放
+            /** 自动分块暂时取消
+             // 根据水印长度做 block 缩放
             let block = blockShape;
             if ((lowChannelMaxLength / wm.length / defaultConfig.zoomMax.coefficient) >= defaultConfig.minBlockNum) {
                 block = defaultConfig.zoomMax.blockShape
@@ -140,6 +143,7 @@ class ImgMethod extends ChannelBase {
             if (returnSecret) {
                 this.blockShape = block
             }
+            **/
             this.wmBoolList = wm;
             this.wmLength = wm.length;
             return
@@ -314,7 +318,7 @@ class Watermark extends ImgMethod {
         // window.channelWmAndpassWordList = channelWmAndpassWordList;
         // window.matrixPassword = matrixPassword;
         // window.channelFlag = channelWmArray.flat();
-        // matrixPassword.decode(channelWmAndpassWordList[39][10].item)
+        // console.log(numList)
         // ⬆️
         let result = this.getWmResult(wmList, wmType, wmLength, name, outputPath);
         return new Promise((res) => {

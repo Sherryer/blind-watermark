@@ -1,8 +1,8 @@
-const numeric = require('numeric');
+const {DCT, IDCT} = require('dct2');
 const {diag, dot, transform, getUSV} = require('./matrixMethods');
 
-const d1 = 20;
-const d2 = 6;
+const d1 = 36;
+const d2 = 20;
 
 const mixRobust = (data, robust, noise) => {
     return (Math.floor(data / robust) + 0.25 + 0.5 * Number(noise)) * robust
@@ -24,31 +24,21 @@ const getArraySum = (arr) => {
 };
 
 const encode = (matrix, password = true) => {
-    let {
-        U,
-        S,
-        V
-    } = getUSV(matrix);
+    const signal = DCT(matrix);
 
+    let { U, S, V } = getUSV(signal);
     S[0] = mixRobust(S[0], d1, password);
     S[1] = mixRobust(S[1], d2, password);
+    const encodeSignal = dot(U, dot(diag(S), transform(V)));
 
-    return dot(U, dot(diag(S), transform(V)))
+    return IDCT(encodeSignal)
 };
 
-const decode = (matrix, average = 0.5) => {
-    // 低频 356 对应 253 以上颜色
-    // 如果区域颜色均值大于 356 说明为白色块，无信息记录，不保存密码权重
-
-    let avg = getArraySum(matrix) / (matrix.length * matrix[0].length);
-    if (avg > 360) {
-        return average
-    }
-
-    let {S} = getUSV(matrix);
-
-    let wm0 = Number(S[0] % d1 > d1 / 2);
-    let wm1 = Number(S[1] % d2 > d2 / 2);
+const decode = (matrix) => {
+    const signal = DCT(matrix);
+    let {S} = getUSV(signal);
+    let wm0 = Number(S[0] % d1 > 0.5 * d1);
+    let wm1 = Number(S[1] % d2 > 0.5 * d2);
 
     return (3 * wm0 + wm1) / 4
 };

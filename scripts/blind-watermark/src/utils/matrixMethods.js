@@ -1,3 +1,5 @@
+const numeric = require('numeric');
+
 // 转置矩阵
 const transform = (array) => {
     if (!array || !array[0] || array[0][0] === undefined) {
@@ -79,7 +81,7 @@ const getUSV = (matrix) => {
     };
 
     while (S.includes(NaN)) {
-        matrix[heightPosition][widthPosition] = Math.round(matrix[heightPosition][widthPosition])
+        matrix[heightPosition][widthPosition] = Math.round(matrix[heightPosition][widthPosition]);
         let USV = numeric.svd(matrix);
         U = USV.U;
         S = USV.S;
