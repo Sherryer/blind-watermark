@@ -12,7 +12,7 @@
   "dependencies": {
     "@babel/polyfill": "^7.7.0",
     "antd": "^4.14.1",
-    "blind-watermark": "0.1.1",
+    "blind-watermark": "^1.0.1",
     "dataloader": "^2.0.0",
     "moment": "^2.24.0",
     "react": "^16.12.0",
