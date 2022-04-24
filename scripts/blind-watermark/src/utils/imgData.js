@@ -55,18 +55,13 @@ const click = (node) => {
 };
 
 const getCanvasDom = () => {
-    let id = 'sherry-chris-bwm-g-i-c-c';
-    let canvas = document.getElementById(id);
-    if (!canvas) {
-        let dom = document.createElement('canvas');
-        dom.style.opacity = '0';
-        dom.style.position = 'absolute';
-        dom.style.left = '-999999px';
-        dom.id = id;
-        document.body.appendChild(dom);
-        canvas = dom
-    }
-    return canvas
+    let dom = document.createElement('canvas');
+    dom.style.opacity = '0';
+    dom.style.top = '0';
+    dom.style.position = 'absolute';
+    dom.style.left = '-999999px';
+    document.body.appendChild(dom);
+    return dom
 };
 
 const getData = (img, readOriginImg) => {
@@ -146,6 +141,8 @@ const getDataByDom = (img, readOriginImg) => {
         utilArr[location][row][rowIndex] = value
     });
 
+    canvas.outerHTML = '';
+
     return {
         width,
         height,
@@ -200,6 +197,7 @@ const setData = async ({R, G, B, A = [], width, height, download = true, name = 
             click(a);
         }, 0);
     }
+    canvas.outerHTML = '';
     return {
         File: dataURLToFile(dataUrl, name),
         base64: dataUrl,
