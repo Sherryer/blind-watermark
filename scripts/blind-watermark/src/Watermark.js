@@ -203,6 +203,7 @@ class ImgMethod extends ChannelBase {
             [R, G, B].forEach(channelData => channelData.forEach(item => item.pop()))
         }
         this.resetData();
+        name = name ? `${name.split('.')[0]}.png` : 'download.png';
         return await this.imgHandle.setData({R, G, B, A: A1d, width, height, download, name, outputPath})
     }
 }
@@ -314,6 +315,7 @@ class Watermark extends ImgMethod {
         let numList = passWordList.map((arr) => (eval(arr.join('+')) / arr.length))
         // ⬇️
         // console.log(passWordList);
+        // console.log(wmList);
         // console.log(channelWmAndpassWordList);
         // window.channelWmAndpassWordList = channelWmAndpassWordList;
         // window.matrixPassword = matrixPassword;
