@@ -1,6 +1,6 @@
 {
   "name": "blind-watermark",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "img blind watermark by frontend",
   "main": "lib/index.js",
   "scripts": {
@@ -39,7 +39,7 @@
     "worker-loader": "^3.0.8"
   },
   "dependencies": {
-    "dct2": "^0.1.1",
+    "dct2": "^0.1.4",
     "discrete-wavelets": "^5.0.7",
     "fast-png": "^5.0.4",
     "get-pixels": "^3.3.2",

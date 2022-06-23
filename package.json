@@ -11,8 +11,7 @@
   "description": "",
   "dependencies": {
     "@babel/polyfill": "^7.7.0",
-    "antd": "^4.14.1",
-    "blind-watermark": "^1.0.1",
+    "blind-watermark": "^1.0.5",
     "dataloader": "^2.0.0",
     "moment": "^2.24.0",
     "react": "^16.12.0",
@@ -36,6 +35,7 @@
     "babylon": "^6.18.0",
     "clean-webpack-plugin": "^3.0.0",
     "css-loader": "^3.2.0",
+    "dct2": "^0.1.4",
     "eslint": "^6.6.0",
     "eslint-loader": "^3.0.2",
     "file-loader": "^4.2.0",
