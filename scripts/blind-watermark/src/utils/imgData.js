@@ -89,6 +89,10 @@ const getDataByDom = (img, readOriginImg) => {
         return Promise.reject('请输入宽高不为0的有效图片')
     }
 
+    if(img.width * img.height > 4500 * 4500) {
+        return Promise.reject(`图片尺寸过大: ${img.width} * ${img.height}`)
+    }
+
     let canvas = getCanvasDom();
 
     canvas.width = img.width;
