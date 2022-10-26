@@ -98,7 +98,7 @@ watermark.extract({wmImg: img, wmLength: [50, 20], wmType: 'img'}).then(val => {
 
 1. 使用 watermark.js 为图片嵌入水印时，会尝试开启 Worker，**在不支持 Worker** 的浏览器中会较长时间占用 js 线程，gui 线程持续挂起，导致页面无法交互。所以建议在不支持 worker 的浏览器中 **页面 loading 打开** 。
 2. 嵌入水印时间与图片尺寸成正比，与机器性能有关，与水印类型无关。 **1125 * 630** 尺寸图片嵌入水印时间约为 **2.5s** 左右。
-3. wmImg 最大支持 4k*4k尺寸
+3. wmImg 最大支持 3k*3k尺寸
 
 
 ## node useage

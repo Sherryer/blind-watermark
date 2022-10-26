@@ -1,5 +1,5 @@
 // web img handle
-const maxImgSize = 5000 * 5000;
+const maxImgSize = 3000 * 3000;
 
 const flat = (arr) => {
     if (!arr) { return [] }

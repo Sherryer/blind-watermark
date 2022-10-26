@@ -360,7 +360,7 @@ class Watermark extends ImgMethod {
             this.setConfig({ level })
                 .then(() => this.readImg(originImg))
                 .then(() => this.readWm(wm, wmType))
-                .then(() => this.mixWm({ name, download, outputPath, useWasm: useWasm && WebAssembly }).catch(e => rej(e)))
+                .then(() => this.mixWm({ name, download, outputPath, useWasm: useWasm && !!WebAssembly }).catch(e => rej(e)))
                 .then(({
                    File,
                    base64,
