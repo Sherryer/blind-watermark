@@ -44,8 +44,11 @@ const wmTypeConfig = {
     img: 'img'
 };
 
+const  extendHammingCodePow = 4;
+
 module.exports = {
     defaultConfig,
     levelConfig,
     wmTypeConfig,
+    extendHammingCodePow,
 };

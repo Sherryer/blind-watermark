@@ -5,7 +5,15 @@ const matrixPassword = require('./utils/matrixPassword');
 const stringCode = require('./utils/stringCode');
 const { value2Secret, secret2Value } = require('./utils/getReturnSecret');
 const mixWatermark = require('./mixWatermark/index');
-const { defaultConfig, levelConfig, wmTypeConfig } = require('./config');
+const extendHammingCode = require('extended-hamming-code');
+const { defaultConfig, levelConfig, wmTypeConfig, extendHammingCodePow} = require('./config');
+
+const {
+    encode,
+    decode,
+} = extendHammingCode.setConfig({
+    pow: extendHammingCodePow
+})
 
 class ChannelBase {
     constructor() {
@@ -144,9 +152,11 @@ class ImgMethod extends ChannelBase {
                 this.blockShape = block
             }
             **/
-            this.wmBoolList = wm;
-            this.wmLength = wm.length;
-            return
+
+            let hammingWmString = encode(wm.map(item => Number(item)).join(''));
+            this.wmBoolList = hammingWmString.split('').map(item => item > 0.5 );
+            this.wmLength = hammingWmString.length;
+            return;
         }
 
         if (wmType === wmTypeConfig.string) {
@@ -167,7 +177,7 @@ class ImgMethod extends ChannelBase {
         return Promise.reject(`参数错误：水印类型错误，请输入 bool | string | img, 当前为 ${wmType}`)
     }
 
-    async mixWm({ name, download, outputPath }) {
+    async mixWm({ name, download, outputPath, useWasm }) {
         if (this.wmBoolList.length === 0) {
             return
         }
@@ -195,6 +205,7 @@ class ImgMethod extends ChannelBase {
             heightChannel,
             wmBoolList,
             blockShape,
+            useWasm,
         });
         if (addHeight) {
             [R, G, B].forEach(channelData => channelData.pop())
@@ -203,7 +214,7 @@ class ImgMethod extends ChannelBase {
             [R, G, B].forEach(channelData => channelData.forEach(item => item.pop()))
         }
         this.resetData();
-        name = name ? `${name.split('.')[0]}.png` : 'download.png';
+        name = name ? `${name.split('.')[0]}.png` : `download-${new Date().getTime()}.png`
         return await this.imgHandle.setData({R, G, B, A: A1d, width, height, download, name, outputPath})
     }
 }
@@ -269,6 +280,9 @@ class Watermark extends ImgMethod {
             currentTypeWmLength = wmLength[0] * wmLength[1]
         }
 
+        // 通过当前长度计算 汉明码加密后长度。
+        let hammingCodeWmLength = encode(''.padStart(currentTypeWmLength, 1)).length;
+
         this.resetData();
         await this.readImg(wmImg);
         let passWordList = [];
@@ -294,7 +308,7 @@ class Watermark extends ImgMethod {
                 for (let j = 0; j < fullColumnNun; j++) {
                     let item = channel[i][j];
                     let password = matrixPassword.decode(item);
-                    let _index = [position % currentTypeWmLength];
+                    let _index = [position % hammingCodeWmLength];
                     if (!passWordList[_index]) {
                         passWordList[_index] = []
                         channelWmAndpassWordList[_index] = []
@@ -311,18 +325,19 @@ class Watermark extends ImgMethod {
             return result
         });
 
-        let wmList = passWordList.map((arr) => (eval(arr.join('+')) / arr.length) > 0.5);
+        let wmList = passWordList.map((arr) => (eval(arr.join('+')) / arr.length) > 0.5 ? '1' : '0');
         let numList = passWordList.map((arr) => (eval(arr.join('+')) / arr.length))
         // ⬇️
         // console.log(passWordList);
-        // console.log(wmList);
+        // console.log('wmList', wmList);
         // console.log(channelWmAndpassWordList);
         // window.channelWmAndpassWordList = channelWmAndpassWordList;
         // window.matrixPassword = matrixPassword;
         // window.channelFlag = channelWmArray.flat();
         // console.log(numList)
         // ⬆️
-        let result = this.getWmResult(wmList, wmType, wmLength, name, outputPath);
+        let decodeList = decode(wmList.join('')).code.split('').map(item => item > 0.5)
+        let result = this.getWmResult(decodeList, wmType, wmLength, name, outputPath);
         return new Promise((res) => {
             res({
                 wm: result
@@ -337,6 +352,7 @@ class Watermark extends ImgMethod {
         name, // 图片名称
         download, // 下载水印图片 仅 web
         outputPath, // 水印图片存放路径 仅 node
+        useWasm, // 启用 wasm 加速
         level, // 等级
     }) {
         this.resetData();
@@ -344,7 +360,7 @@ class Watermark extends ImgMethod {
             this.setConfig({ level })
                 .then(() => this.readImg(originImg))
                 .then(() => this.readWm(wm, wmType))
-                .then(() => this.mixWm({ name, download, outputPath }).catch(e => rej(e)))
+                .then(() => this.mixWm({ name, download, outputPath, useWasm: useWasm && WebAssembly }).catch(e => rej(e)))
                 .then(({
                    File,
                    base64,

@@ -25,6 +25,10 @@
     "type": "git",
     "url": "https://github.com/Sherryer/blind-watermark/tree/master/scripts/blind-watermark"
   },
+  "browser": {
+    "fs": false,
+    "path": false
+  },
   "devDependencies": {
     "@babel/core": "^7.14.3",
     "@babel/plugin-proposal-async-generator-functions": "^7.14.2",
@@ -34,6 +38,7 @@
     "@babel/preset-env": "^7.14.2",
     "babel-core": "^6.26.3",
     "babel-polyfill": "^6.26.0",
+    "binary-code-loader": "^1.0.1",
     "webpack": "^5.37.1",
     "webpack-cli": "^4.7.0",
     "worker-loader": "^3.0.8"
@@ -41,6 +46,7 @@
   "dependencies": {
     "dct2": "^0.1.4",
     "discrete-wavelets": "^5.0.7",
+    "extended-hamming-code": "^1.0.1",
     "fast-png": "^5.0.4",
     "get-pixels": "^3.3.2",
     "numeric": "^1.2.6"

@@ -186,12 +186,6 @@ node  nodeWm.js
 
 [changelog](https://github.com/Sherryer/blind-watermark/blob/master/scripts/blind-watermark/changelog.md)
 
-## 计划
-1. 考虑不阻塞 js 主线程的计算方案。 ✅
-1. 支持 node。 ✅
-1. 支持 level（水印等级）配置，不同等级差异化水印效果处理。 ✅
-1. 单元测试。
-1. 算法优化，增加水印鲁棒性。✅
 
 ## 历史版本 doc
 [0.1.7](https://github.com/Sherryer/blind-watermark/blob/master/scripts/blind-watermark/docs/0.1.7.md)

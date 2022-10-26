@@ -1,4 +1,5 @@
-const mix = require('./mix');
+// const mix = require('./mixWm');
+const mix = require('./mixWmWasm');
 
 onmessage = function (event) {
     let arg = event.data;

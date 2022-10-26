@@ -157,7 +157,7 @@ const getDataByDom = (img, readOriginImg) => {
     }
 };
 
-const setData = async ({R, G, B, A = [], width, height, download = true, name = 'download'}) => {
+const setData = async ({R, G, B, A = [], width, height, download = true, name}) => {
     // r g b 支持 1 维或 2 维数组 a 只支持 1 维数组
     // 数据较大时 2 维转 1 维耗时较高，可能带来住线程阻塞，三通道均改为异步
     let r = await flat(R);

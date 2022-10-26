@@ -2,7 +2,7 @@ const matrixPassword = require('../utils/matrixPassword');
 const strided = require('../utils/strided');
 const privateWt = require('../utils/privateWt');
 
-module.exports = ({
+module.exports = async ({
     lowChannel,
     heightChannel,
     wmBoolList,
@@ -30,7 +30,7 @@ module.exports = ({
                 channel[i][j] = matrixPassword.encode(item, password);
                 lowChannelBlockList.push({
                     index: position + index * fullRowNun * fullColumnNun,
-                    before: item,
+                    // before: item,
                     after: channel[i][j]
                 })
             }

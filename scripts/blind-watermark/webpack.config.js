@@ -12,6 +12,17 @@ module.exports = {
     module: {
         rules: [
             {
+                test: /\.wasm$/,
+                use: [
+                    {
+                        loader: 'binary-code-loader',
+                        options: {
+                            limit: true,
+                        },
+                    },
+                ],
+            },
+            {
                 test: /\.(js|ts)$/,
                 use: [
                     {

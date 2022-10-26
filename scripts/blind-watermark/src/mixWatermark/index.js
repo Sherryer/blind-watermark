@@ -1,5 +1,6 @@
-const mix = require('./mix');
-const Worker = require('./mix.worker.js');
+// const mix = require('./mixWm');
+const mix = require('./mixWmWasm');
+const Worker = require('./mixWm.worker.js');
 
 const createPromiseCallback = () => {
     let callback;

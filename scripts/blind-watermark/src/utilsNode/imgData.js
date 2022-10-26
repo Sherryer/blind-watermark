@@ -77,9 +77,9 @@ const getData = async (imgPath, readOriginImg) => {
         let position = Math.floor(index / 4);
 
         // 如果在读原图，则将 rgb 的 255 修改为 254，以提高水印算法的鲁棒性
-        // if (readOriginImg  && location !== 3) {
-        //     +value === 255 ? value = 254 : ''
-        // }
+        if (readOriginImg  && location !== 3) {
+            +value === 255 ? value = 254 : ''
+        }
 
         let row = Math.floor(position / width);
         let rowIndex = position % width;
@@ -107,7 +107,7 @@ const getData = async (imgPath, readOriginImg) => {
     }
 };
 
-const setData = async ({R, G, B, A = [], width, height, outputPath, name = `output-${new Date().getTime()}`}) => {
+const setData = async ({R, G, B, A = [], width, height, outputPath, name}) => {
     let filePath = outputPath || 'blindWaterMarkOutput';
 
     // r g b 支持 1 维或 2 维数组 a 只支持 1 维数组
@@ -140,7 +140,7 @@ const setData = async ({R, G, B, A = [], width, height, outputPath, name = `outp
             width
         });
 
-        let fullFilePath = path.resolve(filePath, `${name}.png`)
+        let fullFilePath = path.resolve(filePath, name)
         const writeFile = () => (
             fs.writeFile(fullFilePath, rawData, (err) => {
                 if(err) throw err;
