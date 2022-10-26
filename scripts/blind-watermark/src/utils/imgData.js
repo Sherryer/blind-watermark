@@ -89,7 +89,7 @@ const getDataByDom = (img, readOriginImg) => {
         return Promise.reject('请输入宽高不为0的有效图片')
     }
 
-    if(img.width * img.height > 4500 * 4500) {
+    if(img.width * img.height > 5000 * 5000) {
         return Promise.reject(`图片尺寸过大: ${img.width} * ${img.height}`)
     }
 
