@@ -5,7 +5,8 @@ const d1 = 36;
 const d2 = 20;
 
 const mixRobust = (data, robust, noise) => {
-    return (Math.floor(data / robust) + 0.25 + 0.5 * Number(noise)) * robust
+    // return (Math.floor(data / robust) + 0.25 + 0.5 * Number(noise)) * robust
+    return (~~(data / robust) + 0.25 + 0.5 * Number(noise)) * robust
 };
 
 const getArraySum = (arr) => {

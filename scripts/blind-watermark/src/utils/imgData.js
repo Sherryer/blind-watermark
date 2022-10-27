@@ -127,14 +127,14 @@ const getDataByDom = (img, readOriginImg) => {
 
     data.forEach((value, index) => {
         let location = index % 4;
-        let position = Math.floor(index / 4);
+        let position = ~~(index / 4);
 
         // 如果在读原图，则将 rgb 的 255 修改为 254，以提高水印算法的鲁棒性
         if (readOriginImg && location !== 3) {
             +value === 255 ? value = 254 : ''
         }
 
-        let row = Math.floor(position / width);
+        let row = ~~(position / width);
         let rowIndex = position % width;
 
         if (!utilArr[location][row]) {
@@ -175,17 +175,25 @@ const setData = async ({R, G, B, A = [], width, height, download = true, name}) 
     canvas.height = height;
     let ctx = canvas.getContext('2d');
     let insertImgData = ctx.createImageData(width, height);
-
     for (let index = 0; index < a.length; index++) {
         let realIndex = index * 4;
-        let pixR = Math.round(r[index]) || 0;
-        let pixG = Math.round(g[index]) || 0;
-        let pixB = Math.round(b[index]) || 0;
-        let pixA = Math.round(a[index]) || 255;
-        insertImgData.data[realIndex] = formatPixel(pixR);
-        insertImgData.data[realIndex + 1] = formatPixel(pixG);
-        insertImgData.data[realIndex + 2] = formatPixel(pixB);
-        insertImgData.data[realIndex + 3] = formatPixel(pixA);
+        // let pixR = Math.round(r[index]) || 0;
+        // let pixG = Math.round(g[index]) || 0;
+        // let pixB = Math.round(b[index]) || 0;
+        // let pixA = Math.round(a[index]) || 255;
+        let pixR = ~~(r[index] + 0.5) || 0;
+        let pixG = ~~(g[index] + 0.5) || 0;
+        let pixB = ~~(b[index] + 0.5) || 0;
+        let pixA = ~~(a[index] + 0.5) || 255;
+        // insertImgData.data[realIndex] = formatPixel(pixR);
+        // insertImgData.data[realIndex + 1] = formatPixel(pixG);
+        // insertImgData.data[realIndex + 2] = formatPixel(pixB);
+        // insertImgData.data[realIndex + 3] = formatPixel(pixA);
+
+        insertImgData.data[realIndex] = pixR > 255 ? 255 : (pixR < 0 ? 0 : pixR);
+        insertImgData.data[realIndex + 1] = pixG > 255 ? 255 : (pixG < 0 ? 0 : pixG);
+        insertImgData.data[realIndex + 2] = pixB > 255 ? 255 : (pixB < 0 ? 0 : pixB);
+        insertImgData.data[realIndex + 3] = pixA > 255 ? 255 : (pixA < 0 ? 0 : pixA);
     }
 
     ctx.putImageData(insertImgData, 0, 0);

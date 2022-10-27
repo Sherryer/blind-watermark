@@ -74,14 +74,14 @@ const getData = async (imgPath, readOriginImg) => {
 
     data.forEach((value, index) => {
         let location = index % 4;
-        let position = Math.floor(index / 4);
+        let position = ~~(index / 4);
 
         // 如果在读原图，则将 rgb 的 255 修改为 254，以提高水印算法的鲁棒性
-        if (readOriginImg  && location !== 3) {
+        if (readOriginImg && location !== 3) {
             +value === 255 ? value = 254 : ''
         }
 
-        let row = Math.floor(position / width);
+        let row = ~~(position / width);
         let rowIndex = position % width;
 
         if (!utilArr[location][row]) {
@@ -121,10 +121,14 @@ const setData = async ({R, G, B, A = [], width, height, outputPath, name}) => {
 
     for (let index = 0; index < a.length; index++) {
         let realIndex = index * 4;
-        let pixR = Math.round(r[index]) || 0;
-        let pixG = Math.round(g[index]) || 0;
-        let pixB = Math.round(b[index]) || 0;
-        let pixA = Math.round(a[index]) || 255;
+        // let pixR = Math.round(r[index]) || 0;
+        // let pixG = Math.round(g[index]) || 0;
+        // let pixB = Math.round(b[index]) || 0;
+        // let pixA = Math.round(a[index]) || 255;
+        let pixR = ~~(r[index] + 0.5) || 0;
+        let pixG = ~~(g[index] + 0.5) || 0;
+        let pixB = ~~(b[index] + 0.5) || 0;
+        let pixA = ~~(a[index] + 0.5) || 255;
         outputImgData[realIndex] = formatPixel(pixR);
         outputImgData[realIndex + 1] = formatPixel(pixG);
         outputImgData[realIndex + 2] = formatPixel(pixB);

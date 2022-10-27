@@ -45,7 +45,7 @@
   },
   "dependencies": {
     "dct2": "^0.1.4",
-    "discrete-wavelets": "^5.0.7",
+    "discrete-wavelets": "^5.0.13",
     "extended-hamming-code": "^1.0.1",
     "fast-png": "^5.0.4",
     "get-pixels": "^3.3.2",

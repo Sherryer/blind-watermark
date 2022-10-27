@@ -81,7 +81,7 @@ const getUSV = (matrix) => {
     };
 
     while (S.includes(NaN)) {
-        matrix[heightPosition][widthPosition] = Math.round(matrix[heightPosition][widthPosition]);
+        matrix[heightPosition][widthPosition] = ~~(matrix[heightPosition][widthPosition] + 0.5);
         let USV = numeric.svd(matrix);
         U = USV.U;
         S = USV.S;

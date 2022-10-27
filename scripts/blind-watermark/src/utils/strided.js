@@ -10,8 +10,8 @@ const strided4 = (arr, shape = 4) => {
     let rowBlock = Math.ceil(rowLength / shape); // 一行的块数
     let columnBlock = Math.ceil(columnLength / shape); // 所有行的块数
 
-    let fullColumnNun = Math.floor(rowLength / shape); // 完整一行的块数（列）
-    let fullRowNun = Math.floor(columnLength / shape); // 完整的所有行的块数
+    let fullColumnNun = ~~(rowLength / shape); // 完整一行的块数（列）
+    let fullRowNun = ~~(columnLength / shape); // 完整的所有行的块数
 
 
     let result = []; // 1 维

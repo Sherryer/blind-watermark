@@ -130,8 +130,10 @@ class ImgMethod extends ChannelBase {
                 returnSecret,
             } = this;
 
-            let maxWidth = Math.floor((width + 1) / (2 * blockShape));
-            let maxHeight = Math.floor((height + 1) / blockShape);
+            // let maxWidth = Math.floor((width + 1) / (2 * blockShape));
+            let maxWidth = ~~((width + 1) / (2 * blockShape));
+            // let maxHeight = Math.floor((height + 1) / blockShape);
+            let maxHeight = ~~((height + 1) / blockShape);
 
             let lowChannelMaxLength = maxWidth * maxHeight;
 

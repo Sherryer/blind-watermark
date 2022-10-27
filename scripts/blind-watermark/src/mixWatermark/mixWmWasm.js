@@ -89,11 +89,11 @@ module.exports = async ({
                     channel[i][j] = matrixPassword.encode(item, password);
                 }
 
-                lowChannelBlockList.push({
-                    index: position + index * fullRowNun * fullColumnNun,
-                    // before: item,
-                    after: channel[i][j]
-                })
+                // lowChannelBlockList.push({
+                //     index: position + index * fullRowNun * fullColumnNun,
+                //     // before: item,
+                //     after: channel[i][j]
+                // })
             }
         }
     });
