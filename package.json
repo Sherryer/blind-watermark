@@ -11,7 +11,7 @@
   "description": "",
   "dependencies": {
     "@babel/polyfill": "^7.7.0",
-    "blind-watermark": "^1.1.2",
+    "blind-watermark": "^1.1.4",
     "dataloader": "^2.0.0",
     "extended-hamming-code": "^1.0.1",
     "moment": "^2.24.0",

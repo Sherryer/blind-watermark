@@ -97,6 +97,8 @@ float* EMSCRIPTEN_KEEPALIVE encode(float *signal, int length, int password, int 
             prepareIdct[i * length + j] = encodeSignal[i][j];
     }
 
+    Free2DArray(encodeSignal, length);
+
     float *idct_res = IdetTrams(length, prepareIdct);
 
     return idct_res;
@@ -117,12 +119,17 @@ float EMSCRIPTEN_KEEPALIVE decode (float *signal, int length, int d1, int d2) {
         for (int j = 0; j < length; j++)
             u[i][j] = dct_res[i * length + j];
     }
-    free(dct_res);
 
     dsvd(u, length, length, s, v);
 
+    free(dct_res);
+    free(s);
+    Free2DArray(u, length);
+    Free2DArray(v, length);
+
     int wm0 = fmod(s[0], d1) > (0.5 * d1);
     int wm1 = fmod(s[1], d2) > (0.5 * d2);
+
 
     return (3.0 * wm0 + wm1) / 4;
 }

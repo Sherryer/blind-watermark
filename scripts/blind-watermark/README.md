@@ -133,6 +133,7 @@ key: 解密密钥 （当 level 大于 2 时候返回 key，key是用于解密的
 | wmType | 水印类型 | 字符串 | 'bool' 'string' 'img' | - | 是
 | name | 生成图片名称 | 字符串 | - | \`output-${new Date().getTime()}` | 否
 | outputPath | 生成图片路径 | string | - | 'blindWaterMarkOutput' | 否
+| useWasm    | 开启 wasm 加速     | boolean | true false | false | 否
 | level | 水印等级 | 数值 | 1 2 3 4 | 2 | 否 | level 是水印的加密等级。等级越高效果越好，耗时越长。 **level 为 3 4 时会返回字段 key，key 是在level为 3 4 时用于解密的唯一方法，请妥善保管**
 
 ### 解水印
@@ -148,15 +149,16 @@ watermark.extract({wmImg: img, wmLength: 5, wmType: 'string'}).then(val => {})
 watermark.extract({wmImg: img, wmLength: [50, 20], wmType: 'img'}).then(val => {})
 ```
 
-|  参数   | 说明  | 类型 | 可选值 | 默认值 |  必填 | 备注 |
-|  ----  | ----  |  ----  |  ----  |  ----  |  ----  | ----  |
-| wmImg  | 水印图片地址 | string | - | - | 是 | -
-| wmType | 水印类型 | 字符串 | 'bool' 'string' 'img' | - | 是 |
-| wmLength  | 水印长度，wmType 为 'img' 时，需传入水印图片waterMarkImgDom 的 [宽， 高] | 数组、数字 | - | - | 是 |
-| name | 生成图片名称 | 字符串 | - | \`output-${new Date().getTime()}` |
-| outputPath | 生成图片路径 | string | - | 'blindWaterMarkOutput' | 否
-| level | 图片加密等级 | 数字 | 1 2 3 4 | 2 | 否 |  level 大于 2 时需要传入 key。key 在加密时获取 |
-| key | 当level 大于 2 时解水印的密钥；传入key 就 **不需要** 传 wmType、wmLength 了  | 字符串 | - | - | 否 | 
+| 参数         | 说明                                                      | 类型 | 可选值 | 默认值 |  必填 | 备注 |
+|------------|---------------------------------------------------------|  ----  |  ----  |  ----  |  ----  | ----  |
+| wmImg      | 水印图片地址                                                  | string | - | - | 是 | -
+| wmType     | 水印类型                                                    | 字符串 | 'bool' 'string' 'img' | - | 是 |
+| wmLength   | 水印长度，wmType 为 'img' 时，需传入水印图片waterMarkImgDom 的 [宽， 高]   | 数组、数字 | - | - | 是 |
+| name       | 生成图片名称                                                  | 字符串 | - | \`output-${new Date().getTime()}` |
+| outputPath | 生成图片路径                                                  | string | - | 'blindWaterMarkOutput' | 否
+| useWasm    | 开启 wasm 加速                                              | boolean | true false | false | 否
+| level      | 图片加密等级                                                  | 数字 | 1 2 3 4 | 2 | 否 |  level 大于 2 时需要传入 key。key 在加密时获取 |
+| key        | 当level 大于 2 时解水印的密钥；传入key 就 **不需要** 传 wmType、wmLength 了 | 字符串 | - | - | 否 | 
 
 ## 例子
 
