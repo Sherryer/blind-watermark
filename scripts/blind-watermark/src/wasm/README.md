@@ -59,4 +59,14 @@ Module.onRuntimeInitialized = callback;
 Module.onload = promise;
 ```
 
+### 胶水代码额外处理
 
+1. 判断 node 环境增加逻辑
+
+```js
+!ENVIRONMENT_IS_WEB
+
+即：
+
+var ENVIRONMENT_IS_NODE = !ENVIRONMENT_IS_WEB && typeof process == 'object' && typeof process.versions == 'object' && typeof process.versions.node == 'string';
+```

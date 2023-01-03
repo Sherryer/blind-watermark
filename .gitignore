@@ -23,6 +23,7 @@ bower_components/
 build/
 test/
 opencv/
+blindWaterMarkOutput/
 
 public/build
 public/external
